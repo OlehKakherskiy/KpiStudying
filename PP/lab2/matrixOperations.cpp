@@ -56,14 +56,45 @@ matrix multMatr(matrix matrA, matrix matrB, int startIndex, int endIndex, int N)
 }
 
 /**
-* Знаходить максимум з діапазона [startIndex, endIndex) вектора
+* Сортировка вставками вектора в діапазоні [startIndex, endIndex)
 */
-int maxInVector(vector vect, int startIndex, int endIndex){
-    int result = vect[startIndex];
-    for (int i = startIndex+1; i < endIndex; i++){
-        if (result < vect[i])
-            result = vect[i];
+sortVector(vector vect, startIndex, endIndex){
+    for (int i = startIndex + 1; i < endIndex; ++i)
+    {
+        int buf = vect[i];
+        for (int j = i - 1; j >= startIndex; --i)
+        {
+            if(vect[j] > buf){
+                vect[j+1] = vect[j];
+                vect[j] = buf;
+            }
+        }
     }
+}
+
+//слияние векторов (однопоточное)
+vector mergeVectors(vector left, vector right, int leftLen, int rightLen){
+    vector result = new int[leftLen + rightLen];
+    int leftIndex = 0;
+    int rightIndex = 0;
+    int i = 0;
+    while(leftIndex < leftLen && rightIndex < rightLen){
+
+        if(left[leftIndex] < right[rightIndex]){
+            result[i++] = left[leftIndex++];
+        }
+
+        else{
+            result[i++] = right[rightIndex++];
+        }
+    }
+
+    if(leftIndex > leftLen)
+        while(rightIndex < rightLen)
+            result[i++] = right[rightIndex++];
+    else
+        while(leftIndex < leftLen)
+            result[i++] = left[leftIndex++];
     return result;
 }
 
@@ -81,10 +112,6 @@ vector multVectMatr(vector vectA, matrix matrB, int startIndex, int endIndex, in
 	return result;
 }
 
-void multConstVect(int c, vector vect, int startIndex, int endIndex){
-    for(int i = startIndex; i < endIndex; i++)
-        vect[i] *= c;
-}
 
 vector copyVector(vector vectA, int N){
     vector result = new int[N];
@@ -114,8 +141,8 @@ void printVector(vector vect, int n){
     cout << endl;
 }
 
-void addVectors(vector vect1, vector vect2, vector result, int startIndex, int endIndex){
+void addVectorsMultConstans(vector vect1, vector vect2, vector result, int copy_d, int copy_e, int startIndex, int endIndex){
     for (int i = startIndex; i < endIndex; ++i){
-        result[i] = vect1[i] + vect2[i];
+        result[i] = copy_d * vect1[i] + copy_e * vect2[i];
     }
 }

@@ -1,0 +1,160 @@
+GNAT 4.6.4
+Copyright 1992-2010, Free Software Foundation, Inc.
+
+Compiling: matrixoperations.adb (source file time stamp: 2016-03-19 18:55:56)
+
+     1. with Ada.Text_IO, Ada.Integer_Text_IO;
+     2. use Ada.Text_IO, Ada.Integer_Text_IO;
+     3. ------------------------------------------------------------------
+     4. --  File: matrixOperations.adb                                  --
+     5. --                                                              --
+     6. --  Автор: Олег Кахерський, група ІП-31                         --
+     7. --  Дата: 12.03.2016                                            --
+     8. ------------------------------------------------------------------
+     9. package body MatrixOperations is 
+    10.
+    11. procedure Output_Matrix (MA : Matrix) is
+    12. 	begin
+    13.     	New_Line;
+    14.     	for I in Index loop
+    15. 			for J in Index loop
+    16.     			Put(Item => MA(i)(j), Width => 5);
+    17.             end loop;
+    18.             New_line;
+    19.         end loop;
+    20.    	end Output_Matrix;
+    21.
+    22. procedure Matrix_Matrix_Multiply
+    23.     (Left  : Matrix;
+    24.     Right  : Matrix;
+    25.     Start_Index: Integer;
+    26.     End_Index: Integer;
+    27.     const: Integer;
+    28.     Result_Matrix: out Matrix) is
+    29.     begin
+    30.         for i in Start_Index..End_Index loop
+    31.             for J in Index loop
+    32.                Result_Matrix(I)(J) := 0;
+    33.                for K in Index loop
+    34.             Result_Matrix(I)(J) := Result_Matrix(I)(J) + Left(I)(K) * Right(K)(J);
+    35.             end loop;
+    36.             Result_Matrix(I)(J) := Result_Matrix(I)(J) * const;
+    37.         end loop;
+    38.     end loop;
+    39. end Matrix_Matrix_Multiply;
+    40.
+    41. procedure Matrix_Matrix_Add
+    42.     (Left: Matrix;
+    43.     Right:  Matrix;
+    44.     Start_Index: Integer;
+    45.     End_Index: Integer;
+    46.     const: Integer;
+    47.     Result_Matrix: out Matrix) is
+    48.     begin
+    49.         for I in Start_Index .. End_Index loop
+    50.             for J in Index loop
+    51.                Result_Matrix(I)(J) := Left(I)(J) + Right(I)(J)*const;
+    52.             end loop;
+    53.         end loop;
+    54. end Matrix_Matrix_Add;
+    55.
+    56. function Min 
+    57. 	(Vect: Vector;
+    58.     Start_Index: Integer;
+    59.     End_Index: Integer) return Integer is
+    60.     min: Integer;
+    61. 	begin
+    62.         min := Vect(Start_Index);
+    63.         for I in Start_Index .. End_Index loop
+    64.             if min > Vect(I) then
+    65.                min := Vect(I);
+    66.             end if;
+    67.         end loop;
+    68.     return min;
+    69. end Min;
+    70.
+    71. function Input_Vector return Vector is
+    72. 	V: Vector;
+    73.    	begin
+    74.     	for I in Index loop
+    75.     		V(I) := 1;
+    76. 		end loop;
+    77. 	return V;
+    78. end Input_Vector;
+    79.
+    80. function Input_Constant return Integer is
+    81. 	begin
+    82.     return 1;
+    83. end Input_Constant;
+    84.
+    85. function Input_Matrix return Matrix is
+    86. 	Result_Matrix: Matrix;
+    87.     begin
+    88.         for I in Index loop
+    89.             for J in Index loop
+    90.                Result_Matrix(I)(J) := 1;
+    91.             end loop;
+    92.         end loop;
+    93. 	return Result_Matrix;
+    94. end Input_Matrix;
+    95.
+    96. end MatrixOperations;
+
+Compiling: matrixoperations.ads (source file time stamp: 2016-03-15 20:00:35)
+
+     1. ------------------------------------------------------------------
+     2. --  File: matrixOperations.ads                                  --
+     3. --                                                              --
+     4. --  Автор: Олег Кахерський, група ІП-31                         --
+     5. --  Дата: 12.03.2016                                            --
+     6. ------------------------------------------------------------------
+     7. generic
+     8. 	N: in Integer; --розмірність масивів та матриць
+     9. package MatrixOperations is
+    10. 	type Vector is private;
+    11. 	type Matrix is private;
+    12.
+    13.     --Вивід матриці на екран
+    14. 	procedure Output_Matrix (MA : Matrix);     
+    15.
+    16.     --Множення матриці на матрицю(діапазон рядків StartIndex..EndIndex),
+    17.     --результат множення множиться на константу
+    18.     procedure Matrix_Matrix_Multiply
+    19.     (Left  : Matrix;
+    20.     Right  : Matrix;
+    21.     Start_Index: Integer;
+    22.     End_Index: Integer;
+    23.     const: Integer; --константа, на яку множиться результат множення
+    24.     Result_Matrix: out Matrix);
+    25.
+    26.     --Додавання матриць, Right(I)(J) перед додаванням множиться на константу
+    27.     procedure Matrix_Matrix_Add
+    28.     (Left: Matrix;
+    29.     Right:  Matrix;
+    30.     Start_Index: Integer;
+    31.     End_Index: Integer;
+    32.     const: Integer;
+    33.     Result_Matrix: out Matrix);
+    34.
+    35.     --Знаходження мінімального значення в діапазоні StartIndex, EndIndex
+    36.     function Min 
+    37. 	(Vect: Vector;
+    38.     Start_Index: Integer;
+    39.     End_Index: Integer) return Integer;
+    40.
+    41.     --Ввід вектора
+    42.     function Input_Vector return Vector;
+    43.
+    44.     --Ввід константи
+    45.     function Input_Constant return Integer;
+    46.
+    47.     --Ввід матриці
+    48. 	function Input_Matrix return Matrix;
+    49.
+    50. 	private
+    51.     	subtype Index is Integer range 1..N;
+    52.       	type Vector is array (Index) of Integer;
+    53.       	type Matrix is array (Index) of Vector;
+    54. end MatrixOperations;
+
+ 96 lines: No errors

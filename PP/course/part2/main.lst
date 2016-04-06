@@ -1,0 +1,253 @@
+GNAT 4.6.4
+Copyright 1992-2010, Free Software Foundation, Inc.
+
+Compiling: main.adb (source file time stamp: 2016-03-19 20:32:57)
+
+     1. with Ada.Text_IO, Ada.Integer_Text_IO,Ada.Float_Text_IO, Ada.Synchronous_Task_Control, Ada.Real_Time, MatrixOperations;
+     2. use Ada.Text_IO, Ada.Integer_Text_IO,Ada.Float_Text_IO, Ada.Synchronous_Task_Control, Ada.Real_Time;
+     3.
+     4.
+     5. ------------------------------------------------------------------
+     6. --                                                              --
+     7. --          Програмування паралельних компьютерних систем       --
+     8. --           Курсова робота. ПРГ1. Ада. Захищені модулі         --
+     9. --                                                              --
+    10. --  Файл: parallelCalcs.ada                                     --
+    11. --  Завдання:                                                   --
+    12. --        MA = MB*(MC+MO)*a + min(Z)*MK		                   	  --
+    13. --                               								                --
+    14. --        								                    	                --
+    15. --                                                              --
+    16. --  Автор: Кахерський Олег, група IП-31                         --
+    17. --  Дата: 12.03.2016                                            --
+    18. --                                                              --
+    19. ------------------------------------------------------------------
+    20.
+    21. procedure Main is
+    22. 	n: Integer; --розмірність матриць та векторів
+    23. 	p: Integer; --кількість задач
+    24. 	h: Integer; --кількість рядків матриць та векторів на одну задачу
+    25. 	StartTime: Time; --початок обчислень
+    26. 	DiffTime : Time_Span; --різниця між поточним часом(завершення обчислень) та початковим часом
+    27. 	procedure Start is
+    28. 		package MatrixOperationsN is new MatrixOperations(N);
+    29. 		use MatrixOperationsN;
+    30. 	    MA,MO,MC,MK: Matrix;
+    31. 		Z: Vector;
+    32. 		task type ThreadTask(TaskNumber: Integer);
+    33. 		protected ProtectedModule is
+    34. 			entry waitInput; 					--бар'єр для синхронізації вводу даних
+    35. 			entry waitMinZCalcFinish; 			--бар'єр для синхронізації обчислень min(Z)
+    36. 			entry readyForOuptut; 				--очікування сигналу від T2-Tp задачею Т1
+    37. 			function readAlpha return Integer; 	--захищене зчитування alpha
+    38. 			function readMinZ return Integer; 	--захищене зчитування min(Z)
+    39. 			function readMB return Matrix; 		--захищене зчитування readMB
+    40. 			procedure inputFinishSignal;		--надсилання сигналу про завершення вводу даних
+    41. 			procedure finishCalcsSignal;		--надсилання сигналу про завершення обчислень
+    42. 			procedure finishMinZCalcSignal;		--надсилання сигналу про завершення обчислень min(z,zi)
+    43. 			procedure setMinZ(b: Integer);		--встановлення значення minZ
+    44. 			procedure initMB(Buff: Matrix);		--ініціалізація MB
+    45. 			procedure initAlpha(const: Integer);--ініціалізація alpha
+    46. 		private
+    47. 			inputFlag: integer := 0;			--флаг для синхронізації вводу
+    48. 			minZCalcFlag : integer := 0;		--флаг для синхронізації завершення обчислень min(Z)
+    49. 			finCalcFlag : integer := 0;			--флаг для синхронізації завершення обчислень мат. виразу
+    50. 			--спільні ресурси
+    51. 			a, minZ: Integer;					
+    52. 			MB : Matrix;
+    53. 		end ProtectedModule;
+    54.
+    55. 		protected body ProtectedModule is
+    56.
+    57. 			--розблокування задач при inputFlag = 2 (завершення вводу даних в T1, Tp)
+    58. 			entry waitInput when inputFlag = 2 is
+    59. 			begin
+    60. 				null;
+    61. 			end waitInput;
+    62.
+    63. 			--розблокування задач при minZCalcFlag = p (завершення обчислення min(Z))
+    64. 			entry waitMinZCalcFinish when minZCalcFlag = p is
+    65. 			begin
+    66. 				null;
+    67. 			end waitMinZCalcFinish;
+    68.
+    69. 			--розблокування Т1 при завершенні обчислень в задачах T2..Tp
+    70. 			entry readyForOuptut when finCalcFlag = p-1 is
+    71. 			begin
+    72. 				null;
+    73. 			end readyForOuptut;
+    74.
+    75. 			function readAlpha return Integer is
+    76. 			begin
+    77. 				return a;
+    78. 			end readAlpha;
+    79.
+    80. 			function readMinZ return Integer is
+    81. 			begin
+    82. 				return minZ;
+    83. 			end readMinZ;
+    84.
+    85. 			function readMB return Matrix is
+    86. 			begin
+    87. 				return MB;
+    88. 			end readMB;
+    89.
+    90. 			procedure inputFinishSignal is
+    91. 			begin
+    92. 				inputFlag := inputFlag + 1;
+    93. 			end inputFinishSignal;
+    94.
+    95. 			procedure finishCalcsSignal is
+    96. 			begin
+    97. 				finCalcFlag := finCalcFlag + 1;
+    98. 			end finishCalcsSignal;
+    99.
+   100. 			procedure finishMinZCalcSignal is
+   101. 			begin
+   102. 				minZCalcFlag := minZCalcFlag + 1;
+   103. 			end finishMinZCalcSignal;
+   104. 			
+   105. 			procedure setMinZ(b: in Integer) is
+   106. 			begin
+   107. 				minZ := b;
+   108. 			end setMinZ;
+   109.
+   110. 			procedure initAlpha(const: Integer) is
+   111. 			begin
+   112. 				a := const;
+   113. 			end initAlpha;
+   114.
+   115. 			procedure initMB(Buff: Matrix) is
+   116. 			begin
+   117. 				MB := Buff;
+   118. 			end initMB;
+   119.
+   120. 		end ProtectedModule;
+   121.
+   122. 	   	procedure compareWithMinZ(const:Integer) is
+   123. 	   	begin
+   124. 	   		Put_Line("Task is ready for calc minZ");
+   125. 	   		New_line;
+   126. 	   		if ProtectedModule.readMinZ >= const then
+   127. 	   			Put_Line("Task is changing minZ");
+   128. 	   			New_line;
+   129. 	   			ProtectedModule.setMinZ(const);
+   130. 	   		end if;
+   131. 	   	end compareWithMinZ;
+   132. 	   	
+   133. 		procedure calcMatrixEquation(a,zi,startIndex,endIndex : Integer; MB: Matrix) is
+   134. 			Buf1: Matrix;
+   135. 		begin
+   136. 			Matrix_Matrix_Add(MC,MO,startIndex,endIndex,1,Buf1); --Buf1_h = MOh+MCh
+   137. 			Matrix_Matrix_Multiply(Buf1, MB, startIndex, endIndex, a, MA); --MA_h = Buf1_h*MB
+   138. 			Matrix_Matrix_Add(MA,MK,startIndex,endIndex,zi,MA);
+   139. 		end calcMatrixEquation;
+   140.
+   141. 		task body ThreadTask is
+   142. 			i: Integer := TaskNumber;
+   143. 			ai, zi, startIndex, endIndex: Integer;
+   144. 			MBi : Matrix;
+   145. 		begin
+   146. 			Put_Line("Task " & Integer'Image(i) & " started");
+   147. 			New_line;
+   148. 			startIndex := h*(i - 1) + 1;
+   149. 			endIndex := h*i;
+   150. 			if i = p AND n rem p = 1 then
+   151. 				endIndex := endIndex +1;
+   152. 			end if;
+   153. 			if i = 1 then
+   154. 				Put_Line("Task "& Integer'Image(i) & " is initing data");
+   155. 				New_line;
+   156. 				Put_Line("Task "& Integer'Image(i) & " inited MB");
+   157. 				New_line;
+   158. 				ProtectedModule.initMB(Input_Matrix);
+   159. 				Put_Line("Task "& Integer'Image(i) & " inited MO");
+   160. 				New_line;
+   161. 				MO := Input_Matrix;
+   162. 				Put_Line("Task "& Integer'Image(i) & " inited A");
+   163. 				New_line;
+   164. 				ProtectedModule.initAlpha(Input_Constant);
+   165. 				--сигнал задачам о завершении ввода
+   166. 				Put_Line("Task "& Integer'Image(i) & " finished input and send Signal to All");
+   167. 				New_line;
+   168. 				ProtectedModule.inputFinishSignal;
+   169. 			end if;
+   170. 			if i = p then
+   171. 				Put_Line("Task "& Integer'Image(i) & " is initing data");
+   172. 				New_line;
+   173. 				Put_Line("Task "& Integer'Image(i) & " inited MC");
+   174. 				New_line;
+   175. 				MC := Input_Matrix;
+   176. 				Put_Line("Task "& Integer'Image(i) & " inited MK");
+   177. 				New_line;
+   178. 				MK := Input_Matrix;
+   179. 				Put_Line("Task "& Integer'Image(i) & " inited Z");
+   180. 				New_line;
+   181. 				Z := Input_Vector;
+   182. 				ProtectedModule.setMinZ(100000000);
+   183. 				Put_Line("Task "& Integer'Image(i) & " finished input and send Signal to All");
+   184. 				New_line;
+   185. 				ProtectedModule.inputFinishSignal;
+   186. 			else
+   187. 				Put_Line("Task "& Integer'Image(i) & " waits for inputting data in T1, Tp");
+   188. 				New_line;
+   189. 			end if;
+   190. 			ProtectedModule.waitInput;
+   191. 			zi := Min(Z,startIndex, endIndex); 
+   192. 			Put_Line("Task "& Integer'Image(i) & " finished calcs minZ and sent signal of finishing");
+   193. 			compareWithMinZ(zi);
+   194. 			Put_Line("Task "& Integer'Image(i) & " is copying shared resources");
+   195. 			New_line;
+   196. 			--копіювання СР
+   197. 			ai := ProtectedModule.readAlpha;
+   198. 			zi := ProtectedModule.readMinZ;
+   199. 			MBi := ProtectedModule.readMB;
+   200. 			Put_Line("Task "& Integer'Image(i) & " is calculating matrix equation");
+   201. 			New_line;
+   202. 			calcMatrixEquation(ai,zi,startIndex,endIndex,MBi);
+   203. 			if i = 1 then
+   204. 				Put_Line("Task "& Integer'Image(i) & " is waiting for signal from all(finishing calc matrix equation)");
+   205. 				New_line;
+   206. 				ProtectedModule.readyForOuptut;
+   207. 				DiffTime := Clock - StartTime;
+   208. 				Put_Line("Calculating time = ");
+   209. 				Put(Float(To_Duration(DiffTime)));
+   210. 				New_line;
+   211. 				if n <= 8 then
+   212. 					Put_Line("Result:");
+   213. 					New_line;
+   214. 					Output_Matrix(MA);
+   215. 				end if;
+   216. 				Get(H);
+   217. 			else
+   218. 				Put_Line("Task "& Integer'Image(i) & " is sending signal to T1 (finishing calc matrix equation)");
+   219. 				New_line;
+   220. 				ProtectedModule.finishCalcsSignal;
+   221. 			end if;
+   222. 			Put_Line("Task " & Integer'Image(i) & " finished");
+   223. 			New_line;
+   224. 		end ThreadTask;
+   225. 			type ThreadTaskPointer is access ThreadTask;
+   226. 			type TaskArray is array (1 .. p) of ThreadTaskPointer;
+   227. 			tArray: TaskArray;
+   228. 		begin	
+   229. 			for I in 1 .. p loop
+   230. 				tArray(I) := new ThreadTask(I);
+   231. 			end loop;
+   232. 		end Start;
+   233.
+   234. begin
+   235. 	Put("Program started");
+   236. 	New_line;
+   237. 	Put("Input N");
+   238. 	New_line;
+   239. 	Get(n);
+   240. 	Put("Input P");
+   241. 	New_line;
+   242. 	Get(p);
+   243. 	StartTime := Clock;
+   244. 	h := n/p;
+   245. 	Start;
+   246. end Main;
+
+ 246 lines: No errors

@@ -1,0 +1,106 @@
+V "GNAT Lib v4.6"
+A -gnatl=matrixoperations.lst
+A -mtune=generic
+A -march=x86-64
+P SS ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U matrixoperations%b	matrixoperations.adb	52f7401c NE OO PK GE
+W ada%s			ada.ads			ada.ali
+W ada.integer_text_io%s	a-inteio.ads		a-inteio.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+
+U matrixoperations%s	matrixoperations.ads	b2bbd22c BN EE NE OO PK GE
+
+D ada.ads		20070406091342 3ffc8e18
+D a-except.ads		20090727140100 0c711ac9
+D a-finali.ads		20090409150019 e5e85fa4
+D a-filico.ads		20090409150019 872dc219
+D a-inteio.ads		20070406091342 f64b89a4
+D a-ioexce.ads		20091130110856 8b9de6cd
+D a-stream.ads		20090409150019 2ca4ee37
+D a-tags.ads		20101021101406 c7695348
+D a-textio.ads		20091028140912 386df5d4
+D a-tiinio.ads		20090409150019 aa04e5d6
+D a-unccon.ads		20070406091342 f9eb8f06
+D interfac.ads		20090409150019 f77d8799
+D i-cstrea.ads		20100622165701 1bd72c32
+D matrixoperations.ads	20160315200035 b2bbd22c
+D matrixoperations.adb	20160319185556 2e6aee40
+D system.ads		20140416172229 23e1f70b
+D s-crtl.ads		20100617122610 ac77b159
+D s-exctab.ads		20090417131547 66e51330
+D s-ficobl.ads		20100909103250 443b9d66
+D s-finimp.ads		20090409150019 46853fe8
+D s-finroo.ads		20090409150019 dbb860c9
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-stratt.ads		20100909123135 aedef97e
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+D s-wchcon.ads		20090417130712 bfeb2e3d
+X 1 ada.ads
+16K9*Ada 19e8 15|1r6 1r19 2r5 2r18
+X 5 a-inteio.ads
+18K13*Integer_Text_IO[10|45] 15|1w23 2r22
+X 9 a-textio.ads
+49K13*Text_IO 472e16 15|1w10 2r9
+74I12*Field{integer}
+167U14*New_Line 15|13s9 18s13
+X 10 a-tiinio.ads
+65U14*Put 15|16s25[5|18]
+66i7 Item{integer} 15|16r29[5|18]
+67i7 Width{9|74I12} 15|16r47[5|18]
+X 14 matrixoperations.ads
+8i9 N{integer} 51r43
+9k9*MatrixOperations 8z9 54l5 54e21 15|9b14 96l5 96t21
+10A14*Vector(integer) 37r16 42r34 52c14 53r41 15|57r16 71r30 72r12
+11A14*Matrix(10A14) 14r39 19r14 20r14 24r24 28r12 29r13 33r24 48r38 53c14
+. 15|11r31 23r14 24r14 28r24 42r12 43r13 47r24 85r30 86r24
+14U19*Output_Matrix 14>34 15|11b11 20l13 20t26
+14a34 MA{11A14} 15|11b26 16r37
+18U15*Matrix_Matrix_Multiply 19>6 20>5 21>5 22>5 23>5 24<5 15|22b11 39l5
+. 39t27
+19a6 Left{11A14} 15|23b6 34r58
+20a5 Right{11A14} 15|24b5 34r71
+21i5 Start_Index{integer} 15|25b5 30r18
+22i5 End_Index{integer} 15|26b5 30r31
+23i5 const{integer} 15|27b5 36r58
+24a5 Result_Matrix{11A14} 15|28b5 32m16 34m13 34r36 36m13 36r36
+27U15*Matrix_Matrix_Add 28>6 29>5 30>5 31>5 32>5 33<5 15|41b11 54l5 54t22
+28a6 Left{11A14} 15|42b6 51r39
+29a5 Right{11A14} 15|43b5 51r52
+30i5 Start_Index{integer} 15|44b5 49r18
+31i5 End_Index{integer} 15|45b5 49r33
+32i5 const{integer} 15|46b5 51r64
+33a5 Result_Matrix{11A14} 15|47b5 51m16
+36V14*Min{integer} 37>10 38>5 39>5 15|56b10 69l5 69t8
+37a10 Vect{10A14} 15|57b10 62r16 64r22 65r23
+38i5 Start_Index{integer} 15|58b5 62r21 63r18
+39i5 End_Index{integer} 15|59b5 63r33
+42V14*Input_Vector{10A14} 15|71b10 78l5 78t17
+45V14*Input_Constant{integer} 15|80b10 83l5 83t19
+48V18*Input_Matrix{11A14} 15|85b10 94l5 94t17
+51I17 Index{integer} 52r31 53r31 15|14r18 15r34 31r22 33r25 50r22 74r18 88r18
+. 89r22
+X 15 matrixoperations.adb
+14i13 I{14|51I17} 16r40
+15i29 J{14|51I17} 16r43
+30i13 i{integer} 32r30 34r27 34r50 34r63 36r27 36r50
+31i17 J{14|51I17} 32r33 34r30 34r53 34r80 36r30 36r53
+33i20 K{14|51I17} 34r66 34r77
+49i13 I{integer} 51r30 51r44 51r58
+50i17 J{14|51I17} 51r33 51r47 51r61
+60i5 min{integer} 62m9 64r16 65m16 68r12
+63i13 I{integer} 64r27 65r28
+72a9 V{14|10A14} 75m17 77r16
+74i13 I{14|51I17} 75r19
+86a9 Result_Matrix{14|11A14} 90m16 93r16
+88i13 I{14|51I17} 90r30
+89i17 J{14|51I17} 90r33
+

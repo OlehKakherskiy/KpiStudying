@@ -18,8 +18,6 @@ HANDLE semSharedResource, mut, //доступ до СР
         ev1_all_2;
 
 void calculateEquation(int startIndex, int endIndex, int c1, int c2, vector v1, vector v2, matrix matr1){
-    //multConstVect(c1,v1, N);
-    //1multConstVect(c2,v2, N);
     vector bufVect1 = multVectMatr(v1,MO,startIndex,endIndex, N); //Buf1= R*MO
 	multConstVect(c1, bufVect1, startIndex, endIndex); //max(B)*Buf1
     matrix bufMatr = multMatr(MT,matr1,startIndex,endIndex, N);

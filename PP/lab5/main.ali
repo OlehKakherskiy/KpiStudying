@@ -1,0 +1,207 @@
+V "GNAT Lib v4.6"
+M P W=b
+A -gnatl=main.lst
+A -mtune=generic
+A -march=x86-64
+P SS ZX
+R vnnvnnnnnnnnnnnnnnvnnvnnnvvvvvnvnvvnvnnnnvnnvnnvnvnvnnnnnnvnnnnnnnnv4nnnnnv1+nnnv1+nn
+
+U main%b		main.adb		a5113e82 NE OO SU
+W ada%s			ada.ads			ada.ali
+W ada.exceptions%s	a-except.adb		a-except.ali
+W ada.float_text_io%s	a-flteio.ads		a-flteio.ali
+W ada.integer_text_io%s	a-inteio.ads		a-inteio.ali
+W ada.real_time%s	a-reatim.adb		a-reatim.ali
+W ada.synchronous_task_control%s  a-sytaco.adb	a-sytaco.ali
+W ada.tags%s		a-tags.adb		a-tags.ali
+W ada.text_io%s		a-textio.adb		a-textio.ali
+W matrixoperations%s	matrixoperations.adb	matrixoperations.ali
+W system%s		system.ads		system.ali
+W system.concat_2%s	s-conca2.adb		s-conca2.ali
+W system.concat_3%s	s-conca3.adb		s-conca3.ali
+W system.finalization_implementation%s  s-finimp.adb  s-finimp.ali
+W system.finalization_root%s  s-finroo.adb	s-finroo.ali
+W system.img_int%s	s-imgint.adb		s-imgint.ali
+W system.parameters%s	s-parame.adb		s-parame.ali
+W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
+W system.soft_links%s	s-soflin.adb		s-soflin.ali
+W system.task_info%s	s-tasinf.adb		s-tasinf.ali
+W system.tasking%s	s-taskin.adb		s-taskin.ali
+W system.tasking.protected_objects%s  s-taprob.adb  s-taprob.ali
+W system.tasking.protected_objects.entries%s  s-tpoben.adb  s-tpoben.ali
+W system.tasking.protected_objects.operations%s  s-tpobop.adb  s-tpobop.ali
+W system.tasking.stages%s  s-tassta.adb		s-tassta.ali
+
+D ada.ads		20070406091342 3ffc8e18
+D a-except.ads		20090727140100 0c711ac9
+D a-finali.ads		20090409150019 e5e85fa4
+D a-filico.ads		20090409150019 872dc219
+D a-flteio.ads		20070406091342 e18a47a0
+D a-inteio.ads		20070406091342 f64b89a4
+D a-ioexce.ads		20091130110856 8b9de6cd
+D a-reatim.ads		20090409150019 63f07669
+D a-stream.ads		20090409150019 2ca4ee37
+D a-sytaco.ads		20090409150019 a7cf8eb9
+D a-tags.ads		20101021101406 c7695348
+D a-textio.ads		20091028140912 386df5d4
+D a-tiflio.ads		20090409150019 56fbda09
+D a-tiinio.ads		20090409150019 aa04e5d6
+D a-unccon.ads		20070406091342 f9eb8f06
+D interfac.ads		20090409150019 f77d8799
+D i-c.ads		20101007125900 809c38c4
+D i-cstrea.ads		20100622165701 1bd72c32
+D main.adb		20160406195603 c2c7e930
+D matrixoperations.ads	20160406104526 8c4514b2
+D matrixoperations.adb	20160406104608 ffacf681
+D system.ads		20140416172229 23e1f70b
+D s-atacco.ads		20090409150019 1dc856ad
+D s-conca2.ads		20090420091404 fbd0f2fc
+D s-conca3.ads		20090420091404 762a026a
+D s-crtl.ads		20100617122610 ac77b159
+D s-exctab.ads		20090417131547 66e51330
+D s-ficobl.ads		20100909103250 443b9d66
+D s-finimp.ads		20090409150019 46853fe8
+D s-finroo.ads		20090409150019 dbb860c9
+D s-imgint.ads		20090409150019 02dbe0c2
+D s-linux.ads		20090730092306 47911ab1
+D s-multip.ads		20101011073009 38ac9f73
+D s-osinte.ads		20101127183452 6e2d2e09
+D s-parame.ads		20091130110856 9c5d83fa
+D s-secsta.ads		20090707124243 eea35a36
+D s-soflin.ads		20090729085153 9414c974
+D s-stache.ads		20090417130712 596fc1b4
+D s-stausa.ads		20101018101807 bba781f7
+D s-stalib.ads		20101021102512 c4241c00
+D s-stoele.ads		20090417130712 facd7d98
+D s-stoele.adb		20100617152355 afc5dc80
+D s-stratt.ads		20100909123135 aedef97e
+D s-tasinf.ads		20090409150019 21316953
+D s-taspri.ads		20080408071349 af44aca8
+D s-taprop.ads		20090409150019 07f79e46
+D s-taskin.ads		20101021101406 b2eaee08
+D s-taprob.ads		20090409150019 502249e3
+D s-tpoben.ads		20090409150019 e8374469
+D s-tpobop.ads		20090409150019 5f548bb3
+D s-tassta.ads		20101018103456 e88ef99e
+D s-traent.ads		20090417130712 5221ee41
+D s-unstyp.ads		20090409150019 6ae15c76
+D s-wchcon.ads		20090417130712 bfeb2e3d
+X 1 ada.ads
+16K9*Ada 19e8 19|1r6 1r19 1r39 1r58 1r88 2r5 2r18 2r38 2r57 2r87
+X 5 a-flteio.ads
+20K13*Float_Text_IO[13|45] 19|1w43 2r42
+X 6 a-inteio.ads
+18K13*Integer_Text_IO[14|45] 19|1w23 2r22
+X 8 a-reatim.ads
+39K13*Real_Time 139e18 19|1w92 2r91
+X 10 a-sytaco.ads
+40K13*Synchronous_Task_Control 78e33 19|1w62 2r61
+X 12 a-textio.ads
+49K13*Text_IO 472e16 19|1w10 2r9
+167U14*New_Line 19|163s33 254s41 281s41 290s25 305s9 307s9 310s9
+243U14*Put 19|253s41 304s9 306s9 309s9
+264U14*Put_Line 19|162s33 280s41 289s25
+X 14 a-tiinio.ads
+55U14*Get 19|284s33[6|18] 308s9[6|18] 311s9[6|18]
+X 19 main.adb
+21U11*Main 21b11 314l5 314t9
+22i9 n{integer} 27r67 193r45 279r36 308m13 312r14
+23i9 p{integer} 25r35 74r81 85r64 170r37 192r32 252r45 294r55 297r39 311m13
+. 312r16
+24i9 h{integer} 191r39 195r45 284m37 312m9
+25a9 scalarResults(integer) 171r52 249m25 253r59 298m33
+26U19 Start 26b19 301l21 301t26 313s9
+27K25 MatrixOperationsN[20|9] 28r21
+29a17 MO{20|11A14[27]} 179r48 239m33
+30a17 A{20|10A14[27]} 181m54 282r55
+30a20 B{20|10A14[27]} 222m33 249r61
+30a23 C{20|10A14[27]} 236m33 249r64
+30a26 Z{20|10A14[27]} 181r43 211m33
+32T27 ThreadTask 32d38 184b27 291l21 291t31 293r58 299r50
+32i38 tID{integer} 185r39
+33w27 ProtectedModule 66b32 165l21 165t36 190r25 199r33 201r33 202r33 205r33
+. 206r33 209r33 210r33 213r33 214r33 217r33 218r33 221r33 223r33 224r33 226r33
+. 227r33 230r33 231r33 235r33 238r33 242r33 243r33 246r33 248r25 250r25 256r33
+. 257r33 258r33 258r110 259r33 261r25 262r25 265r31 266r31 267r31 268r47
+. 269r32 271r25 277r33 278r33 286r33 287r33
+34Y31 waitInput 69b31 72l29 72t38 248s41
+35Y31 waitScalarMultFin 79b31 82l29 82t46 261s41
+36Y31 waitScalarPreparationFin 74b31 77l29 77t53 256s49
+37Y31 readyForOuptut 85b31 88l29 88t43 278s49
+39V34 readE{integer} 90b34 93l29 93t34 265s47
+40V34 readD{integer} 95b34 98l29 98t34 266s47
+41V34 read_a{integer} 100b34 103l29 103t35 258s126 268s63
+42V34 readR{20|10A14[27]} 105b34 108l29 108t34 267s47
+43V34 readMK{20|11A14[27]} 110b34 113l29 113t35 269s48
+45U35 inputFinishSignal 115b35 118l29 118t46 206s49 218s49 231s49 243s49
+46U35 finishCalcsSignal 120b35 123l29 123t46 287s49
+47U35 finishScalarPreparation 125b35 128l29 128t52 250s41
+48U35 finishScalarMultCalcs 130b35 133l29 133t50 259s49
+49U35 init_a 49>42 135b35 138l29 138t35 257s49
+49i42 b{integer} 135b42 137r53
+50U35 init_e 50>42 140b35 143l29 143t35 214s49
+50i42 b{integer} 140b42 142r38
+51U35 init_d 51>42 145b35 148l29 148t35 227s49
+51i42 b{integer} 145b42 147r38
+52U35 initR 52>41 150b35 153l29 153t34 224s49
+52a41 Buff{20|10A14[27]} 150b41 152r38
+53U35 initMK 53>42 155b35 158l29 158t35 202s49
+53a42 Buff{20|11A14[27]} 155b42 157r39
+54U35 outputLine 54>46 160b35 164l29 164t39 190s41 199s49 201s49 205s49 209s49
+. 210s49 213s49 217s49 221s49 223s49 226s49 230s49 235s49 238s49 242s49 246s49
+. 258s49 262s41 271s41 277s49 286s49
+54s46 message{string} 160b46 162r42
+56i25 inputFlag{integer} 69r46 117r33 117r46
+57i25 finishFlag{integer} 85r51 122r33 122r47
+58i25 scalarPreparation{integer} 74r61 127r33 127r54
+59i25 scalarResultFlag{integer} 79r54 132r33
+61i25 e{integer} 92r40 142r33
+61i28 scalarMultResult{integer} 102r40 137r33
+61i46 d{integer} 97r40 147r33
+62a25 R{20|10A14[27]} 107r40 152r33
+63a25 MK{20|11A14[27]} 112r40 157r33
+167V26 scalarResultsSum{integer} 167b26 174l21 174t37 257s56
+168i25 Result{integer} 171m33 171r43 173r32
+170i29 I{integer} 171r66
+175U27 calcMatrixEquation 175b27 175>46 175>49 175>52 175>55 175>66 175>86
+. 175>97 182l21 182t39 274s25
+175i46 ai{integer} 181r59
+175i49 ei{integer} 181r56
+175i52 di{integer} 181r62
+175i55 startIndex{integer} 179r55 180r65 181r65
+175i66 endIndex{integer} 179r66 180r76 181r76
+175a86 Ri{20|10A14[27]} 180r48
+175a97 MKi{20|11A14[27]} 179r51
+176a25 Buf1{20|11A14[27]} 179m75 180r51
+177a25 Vect_Buf{20|10A14[27]} 180m56 181r45
+185i25 i{integer} 190r76 191r42 192r28 195r47 198r28 199r83 201r83 205r83
+. 208r31 209r83 210r83 213r83 217r83 220r31 221r83 223r83 226r83 230r83 233r31
+. 235r83 238r83 242r83 246r83 249r39 251r28 262r75 271r75 276r28 277r83 286r83
+. 289r58
+186i25 scalarMultResult_i{integer} 268m25 274r44
+186i45 ei{integer} 265m25 274r64
+186i49 di{integer} 266m25 274r68
+186i53 startIndex{integer} 191m25 249r67 274r72
+186i65 endIndex{integer} 193m33 195m33 249r79 274r84
+187a25 MKi{20|11A14[27]} 269m25 274r98
+188a25 Ri{20|10A14[27]} 267m25 274r94
+252i37 j{integer} 253r73
+293P30 ThreadTaskPointer(32T27) 294r61
+294A30 TaskArray(293P30)<integer> 295r33
+295a25 tArray{294A30} 299m33
+297i29 I{integer} 298r47 299r40 299r61
+X 20 matrixoperations.ads
+9k9*MatrixOperations 19|1w103 27r50 20|60e21
+10A14 Vector(integer) 19|30r30[27] 42r47[27] 52r47[27] 62r29[27] 105r47[27]
+. 150r47[27] 175r89[27] 177r35[27] 188r29[27]
+11A14 Matrix(10A14[19|27]) 19|29r22[27] 43r48[27] 53r48[27] 63r30[27] 110r48[27]
+. 155r48[27] 175r102[27] 176r31[27] 187r31[27]
+14U19 Output_Vector 19|282s41[27]
+18U15 Matrix_Matrix_Multiply 19|179s25[27]
+26V14 Scalar_Multiply{integer} 19|249s45[27]
+32U15 Vector_Matrix_Multiply 19|180s25[27]
+39U15 Vector_Vector_Add 19|181s25[27]
+49V14 Input_Vector{10A14[19|27]} 19|211s38[27] 222s38[27] 224s55[27] 236s38[27]
+52V14 Input_Constant{integer} 19|214s56[27] 227s56[27]
+55V18 Input_Matrix{11A14[19|27]} 19|202s56[27] 239s39[27]
+
