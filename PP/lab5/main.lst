@@ -1,7 +1,7 @@
 GNAT 4.6.4
 Copyright 1992-2010, Free Software Foundation, Inc.
 
-Compiling: main.adb (source file time stamp: 2016-04-06 19:56:03)
+Compiling: main.adb (source file time stamp: 2016-04-09 18:17:44)
 
      1. with Ada.Text_IO, Ada.Integer_Text_IO,Ada.Float_Text_IO, Ada.Synchronous_Task_Control, Ada.Real_Time, MatrixOperations;
      2. use Ada.Text_IO, Ada.Integer_Text_IO,Ada.Float_Text_IO, Ada.Synchronous_Task_Control, Ada.Real_Time;
@@ -10,315 +10,283 @@ Compiling: main.adb (source file time stamp: 2016-04-06 19:56:03)
      5. ------------------------------------------------------------------
      6. --                                                              --
      7. --          Програмування паралельних компьютерних систем       --
-     8. --           Курсова робота. ПРГ1. Ада. Захищені модулі         --
+     8. --          Лаб 5. Ада. Захищені модулі					        --
      9. --                                                              --
-    10. --  Файл: parallelCalcs.ada                                     --
+    10. --  Файл: main.abd			                                    --
     11. --  Завдання:                                                   --
-    12. --        A = eZ +d(B*C)*R(MO*MK)			                   	--
-    13. --                               								--
-    14. --        								                    	--
-    15. --                                                              --
-    16. --  Автор: Кахерський Олег, група IП-31                         --
-    17. --  Дата: 06.04.2016                                            --
-    18. --                                                              --
-    19. ------------------------------------------------------------------
-    20.
-    21. procedure Main is
-    22. 	n: Integer; 			--розмірність матриць та векторів
-    23. 	p: Integer; 			--кількість задач
-    24. 	h: Integer; 			--кількість рядків матриць та векторів на одну задачу
-    25. 	scalarResults : array (1..P) of Integer;
-        	                          |
-        >>> warning: "P" may be referenced before it has a value
-
-    26. 	procedure Start is
-    27. 		package MatrixOperationsN is new MatrixOperations(N);
-    28. 		use MatrixOperationsN;
-    29. 	   	MO : Matrix;
-    30. 	   	A, B, C, Z : Vector;
-    31.
-    32. 		task type ThreadTask(tID: Integer);
-    33. 		protected ProtectedModule is
-    34. 			entry waitInput; 					--бар'єр для синхронізації вводу даних
-    35. 			entry waitScalarMultFin;			--очікування підсумовування скалярних добутків підвекторів
-    36. 			entry waitScalarPreparationFin;     --очікування обчислення скалярних добутків підвекторів
-    37. 			entry readyForOuptut; 				--очікування сигналу від T2-Tp задачею Т1
-    38.
-    39. 			function readE return Integer;
-    40. 			function readD return Integer;
-    41. 			function read_a return Integer;
-    42. 			function readR return Vector;
-    43. 			function readMK return Matrix;
-    44.
-    45. 			procedure inputFinishSignal;		--надсилання сигналу про завершення вводу даних
-    46. 			procedure finishCalcsSignal;		--надсилання сигналу про завершення обчислень
-    47. 			procedure finishScalarPreparation;        --надсилання сигналу про завершення підсумовування проміжних результатів скалярного добутку
-    48. 			procedure finishScalarMultCalcs;    --надсилання сигналу про завершення обчислення скалярного добутку векторів
-    49. 			procedure init_a(b: Integer);
-    50. 			procedure init_e(b: Integer);
-    51. 			procedure init_d(b: Integer);
-    52. 			procedure initR(Buff: Vector);
-    53. 			procedure initMK(Buff: Matrix);
-    54. 			procedure outputLine(message: String);
-    55. 		private
-    56. 			inputFlag : Integer := 0;
-    57. 			finishFlag : Integer := 0;
-    58. 			scalarPreparation : Integer := 0;
-    59. 			scalarResultFlag : Integer := 0;
+    12. --                               								--
+    13. --        								                    	--
+    14. --                                                              --
+    15. --  Автор: Кахерський Олег, група IП-31                         --
+    16. --  Дата: 07.04.2016                                            --
+    17. --                                                              --
+    18. ------------------------------------------------------------------
+    19.
+    20. procedure Main is
+    21. 	n: Integer; 			--розмірність матриць та векторів
+    22. 	p: Integer; 			--кількість задач
+    23. 	h: Integer; 			--кількість рядків матриць та векторів на одну задачу
+    24. 	procedure Start is
+    25. 		package MatrixOperationsN is new MatrixOperations(N);
+    26. 		use MatrixOperationsN;
+    27. 	   	MO : Matrix;
+    28. 	   	A, B, C, Z : Vector;
+    29.
+    30. 		task type ThreadTask(tID: Integer);
+    31. 		protected ProtectedModule is
+    32. 			entry waitInput; 					--бар'єр для синхронізації вводу даних
+    33. 			entry waitScalarMultFin;			--очікування підсумовування скалярних добутків підвекторів
+    34. 			entry readyForOuptut; 				--очікування сигналу від T2-Tp задачею Т1
+    35.
+    36. 			function readE return Integer;
+    37. 			function readD return Integer;
+    38. 			function read_a return Integer;
+    39. 			function readR return Vector;
+    40. 			function readMK return Matrix;
+    41.
+    42. 			procedure inputFinishSignal;		--надсилання сигналу про завершення вводу даних
+    43. 			procedure finishCalcsSignal;		--надсилання сигналу про завершення обчислень
+    44. 			procedure finishScalarMultCalcs;    --надсилання сигналу про завершення обчислення скалярного добутку векторів
+    45. 			procedure addToScalarMultResult(b: Integer);
+    46. 			procedure init_e(b: Integer);
+    47. 			procedure init_d(b: Integer);
+    48. 			procedure initR(Buff: Vector);
+    49. 			procedure initMK(Buff: Matrix);
+    50. 			procedure outputLine(message: String);
+    51. 		private
+    52. 			inputFlag : Integer := 0;
+    53. 			finishFlag : Integer := 0;
+    54. 			scalarResultFlag : Integer := 0;
+    55.
+    56. 			e, x, d : Integer;
+    57. 			R : Vector;
+    58. 			MK : Matrix;
+    59. 		end ProtectedModule;
     60.
-    61. 			e, scalarMultResult, d : Integer;
-    62. 			R : Vector;
-    63. 			MK : Matrix;
-    64. 		end ProtectedModule;
-    65.
-    66. 		protected body ProtectedModule is
-    67.
-    68. 			--розблокування задач при inputFlag = 2 (завершення вводу даних в T1..4)
-    69. 			entry waitInput when inputFlag = 4 is
+    61. 		protected body ProtectedModule is
+    62.
+    63. 			--розблокування задач при inputFlag = 4 (завершення вводу даних в T1..4)
+    64. 			entry waitInput when inputFlag = 4 is
+    65. 			begin
+    66. 				null;
+    67. 			end waitInput;
+    68.
+    69. 			entry waitScalarMultFin when scalarResultFlag = p is
     70. 			begin
     71. 				null;
-    72. 			end waitInput;
+    72. 			end waitScalarMultFin;
     73.
-    74. 			entry waitScalarPreparationFin when scalarPreparation = p is
-    75. 			begin
-    76. 				null;
-    77. 			end waitScalarPreparationFin;
-    78.
-    79. 			entry waitScalarMultFin when scalarResultFlag = 1 is
-    80. 			begin
-    81. 				null;
-    82. 			end waitScalarMultFin;
-    83.
-    84. 			--розблокування Т1 при завершенні обчислень в задачах T2..Tp
-    85. 			entry readyForOuptut when finishFlag = p-1 is
+    74. 			--розблокування Т2 при завершенні обчислень в задачах T1..Tp
+    75. 			entry readyForOuptut when finishFlag = p-1 is
+    76. 			begin
+    77. 				null;
+    78. 			end readyForOuptut;
+    79.
+    80. 			function readE return Integer is
+    81. 			begin
+    82. 				return e;
+    83. 			end readE;
+    84.
+    85. 			function readD return Integer is
     86. 			begin
-    87. 				null;
-    88. 			end readyForOuptut;
+    87. 				return d;
+    88. 			end readD;
     89.
-    90. 			function readE return Integer is
+    90. 			function read_A return Integer is
     91. 			begin
-    92. 				return e;
-    93. 			end readE;
+    92. 				return x;
+    93. 			end read_A;
     94.
-    95. 			function readD return Integer is
+    95. 			function readR return Vector is
     96. 			begin
-    97. 				return d;
-    98. 			end readD;
+    97. 				return R;
+    98. 			end readR;
     99.
-   100. 			function read_A return Integer is
+   100. 			function readMK return Matrix is
    101. 			begin
-   102. 				return scalarMultResult;
-   103. 			end read_A;
+   102. 				return MK;
+   103. 			end readMK;
    104.
-   105. 			function readR return Vector is
+   105. 			procedure inputFinishSignal is   	--надсилання сигналу про завершення вводу даних
    106. 			begin
-   107. 				return R;
-   108. 			end readR;
+   107. 				inputFlag := inputFlag + 1;
+   108. 			end inputFinishSignal;
    109.
-   110. 			function readMK return Matrix is
+   110. 			procedure finishCalcsSignal is		--надсилання сигналу про завершення обчислень
    111. 			begin
-   112. 				return MK;
-   113. 			end readMK;
+   112. 				finishFlag := finishFlag + 1;
+   113. 			end finishCalcsSignal;
    114.
-   115. 			procedure inputFinishSignal is   	--надсилання сигналу про завершення вводу даних
+   115. 			procedure finishScalarMultCalcs is
    116. 			begin
-   117. 				inputFlag := inputFlag + 1;
-   118. 			end inputFinishSignal;
+   117. 				scalarResultFlag := scalarResultFlag + 1;
+   118. 			end finishScalarMultCalcs;
    119.
-   120. 			procedure finishCalcsSignal is		--надсилання сигналу про завершення обчислень
+   120. 			procedure addToScalarMultResult(b: Integer) is
    121. 			begin
-   122. 				finishFlag := finishFlag + 1;
-   123. 			end finishCalcsSignal;
+   122. 				x := x + b;
+   123. 			end addToScalarMultResult;
    124.
-   125. 			procedure finishScalarPreparation is        --надсилання сигналу про завершення підсумовування проміжних результатів скалярного добутку
+   125. 			procedure init_e(b: Integer) is
    126. 			begin
-   127. 				scalarPreparation := scalarPreparation + 1;
-   128. 			end finishScalarPreparation;
+   127. 				e := b;
+   128. 			end init_e;
    129.
-   130. 			procedure finishScalarMultCalcs is
+   130. 			procedure init_d(b: Integer) is
    131. 			begin
-   132. 				scalarResultFlag := 1;
-   133. 			end finishScalarMultCalcs;
+   132. 				d := b;
+   133. 			end init_d;
    134.
-   135. 			procedure init_a(b: Integer) is
+   135. 			procedure initR(Buff: Vector) is
    136. 			begin
-   137. 				scalarMultResult := b;
-   138. 			end init_a;
+   137. 				R := Buff;
+   138. 			end initR;
    139.
-   140. 			procedure init_e(b: Integer) is
+   140. 			procedure initMK(Buff: Matrix) is
    141. 			begin
-   142. 				e := b;
-   143. 			end init_e;
+   142. 				MK := Buff;
+   143. 			end initMK;
    144.
-   145. 			procedure init_d(b: Integer) is
+   145. 			procedure outputLine(message: String) is
    146. 			begin
-   147. 				d := b;
-   148. 			end init_d;
-   149.
-   150. 			procedure initR(Buff: Vector) is
-   151. 			begin
-   152. 				R := Buff;
-   153. 			end initR;
-   154.
-   155. 			procedure initMK(Buff: Matrix) is
-   156. 			begin
-   157. 				MK := Buff;
-   158. 			end initMK;
-   159.
-   160. 			procedure outputLine(message: String) is
-   161. 			begin
-   162. 				Put_Line(message);
-   163. 				New_line;
-   164. 			end outputLine;
-   165. 		end ProtectedModule;
-   166.
-   167. 		function scalarResultsSum return Integer is
-   168. 			Result : Integer := 0;
-   169. 		begin
-   170. 			for I in 1..P loop
-   171. 				Result := Result + scalarResults(I);
-   172. 			end loop;
-   173. 			return Result;
-   174. 		end scalarResultsSum;
-   175. 		procedure calcMatrixEquation(ai,ei,di,startIndex,endIndex : Integer; Ri:Vector; MKi: Matrix) is
-   176. 			Buf1: Matrix;
-   177. 			Vect_Buf: Vector;
-   178. 		begin
-   179. 			Matrix_Matrix_Multiply(MO,MKi,startIndex,endIndex,Buf1); 			--Buf1_h = MOh+MK
-   180. 			Vector_Matrix_Multiply(Ri,Buf1,Vect_Buf,startIndex,endIndex);
-   181. 			Vector_Vector_Add(Z,Vect_Buf,A,ei,ai*di,startIndex,endIndex);
-   182. 		end calcMatrixEquation;
-   183.
-   184. 		task body ThreadTask is
-   185. 			i: Integer := tID;
-   186. 			scalarMultResult_i, ei, di, startIndex, endIndex: Integer;
-   187. 			MKi : Matrix;
-   188. 			Ri: Vector;
-   189. 		begin
-   190. 			ProtectedModule.outputLine("Task " & Integer'Image(i) & " started");
-   191. 			startIndex := h*(i - 1) + 1;
-   192. 			if i = p then
-   193. 				endIndex := N;
-   194. 			else 
-   195. 				endIndex := h*i;
-   196. 			end if;
-   197.
-   198. 			if i = 1 then
-   199. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " is inputting data");
-   200. 				
-   201. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inputted MK");
-   202. 				ProtectedModule.initMK(Input_Matrix);
-   203.
-   204. 				--сигнал задачам о завершении ввода
-   205. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " finished input and send Signal to All");
-   206. 				ProtectedModule.inputFinishSignal;
-   207.
-   208. 			elsif i = 2 then
-   209. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " is initing data");
-   210. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inited Z");
-   211. 				Z := Input_Vector;
-   212.
-   213. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inited e");
-   214. 				ProtectedModule.init_e(Input_Constant);
-   215.
-   216. 				--сигнал задачам о завершении ввода
-   217. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " finished input and send Signal to All");
-   218. 				ProtectedModule.inputFinishSignal;
-   219.
-   220. 			elsif i = 3 then
-   221. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inited B");
-   222. 				B := Input_Vector;
-   223. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inited R");
-   224. 				ProtectedModule.initR(Input_Vector);
+   147. 				Put_Line(message);
+   148. 				New_line;
+   149. 			end outputLine;
+   150. 		end ProtectedModule;
+   151.
+   152. 		procedure calcMatrixEquation(ai,ei,di,startIndex,endIndex : Integer; Ri:Vector; MKi: Matrix) is
+   153. 			Buf1: Matrix;
+   154. 			Vect_Buf: Vector;
+   155. 		begin
+   156. 			Matrix_Matrix_Multiply(MO,MKi,startIndex,endIndex,Buf1); 			--Buf1_h = MOh+MK
+   157. 			Vector_Matrix_Multiply(Ri,Buf1,Vect_Buf,startIndex,endIndex);
+   158. 			Vector_Vector_Add(Z,Vect_Buf,A,ei,ai*di,startIndex,endIndex);
+   159. 		end calcMatrixEquation;
+   160.
+   161. 		task body ThreadTask is
+   162. 			i: Integer := tID;
+   163. 			xi, ei, di, startIndex, endIndex: Integer;
+   164. 			MKi : Matrix;
+   165. 			Ri: Vector;
+   166. 		begin
+   167. 			ProtectedModule.outputLine("Task " & Integer'Image(i) & " started");
+   168. 			startIndex := h*(i - 1) + 1;
+   169. 			if i = p then
+   170. 				endIndex := N;
+   171. 			else 
+   172. 				endIndex := h*i;
+   173. 			end if;
+   174.
+   175. 			if i = 1 then
+   176. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " is inputting data");
+   177. 				
+   178. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inputted MK");
+   179. 				ProtectedModule.initMK(Input_Matrix);
+   180.
+   181. 				--сигнал задачам о завершении ввода
+   182. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " finished input and send Signal to All");
+   183. 				ProtectedModule.inputFinishSignal;
+   184.
+   185. 			elsif i = 2 then
+   186. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " is initing data");
+   187. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inited Z");
+   188. 				Z := Input_Vector;
+   189.
+   190. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inited e");
+   191. 				ProtectedModule.init_e(Input_Constant);
+   192.
+   193. 				--сигнал задачам о завершении ввода
+   194. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " finished input and send Signal to All");
+   195. 				ProtectedModule.inputFinishSignal;
+   196.
+   197. 			elsif i = 3 then
+   198. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inited B");
+   199. 				B := Input_Vector;
+   200. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inited R");
+   201. 				ProtectedModule.initR(Input_Vector);
+   202.
+   203. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inited d");
+   204. 				ProtectedModule.init_d(Input_Constant);
+   205.
+   206. 				--сигнал задачам о завершении ввода
+   207. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " finished input and send Signal to All");
+   208. 				ProtectedModule.inputFinishSignal;
+   209.
+   210. 			elsif i = 4 then
+   211.
+   212. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inited C");
+   213. 				C := Input_Vector;
+   214.
+   215. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inited MO");
+   216. 				MO := Input_Matrix;
+   217.
+   218. 				--сигнал задачам о завершении ввода
+   219. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " finished input and send Signal to All");
+   220. 				ProtectedModule.inputFinishSignal;
+   221.
+   222. 			else
+   223. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " waits for inputting data in T1, Tp");
+   224. 			end if;
    225.
-   226. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inited d");
-   227. 				ProtectedModule.init_d(Input_Constant);
+   226. 			--синхронізація по вводу
+   227. 			ProtectedModule.waitInput; 
    228.
-   229. 				--сигнал задачам о завершении ввода
-   230. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " finished input and send Signal to All");
-   231. 				ProtectedModule.inputFinishSignal;
-   232.
-   233. 			elsif i = 4 then
-   234.
-   235. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inited C");
-   236. 				C := Input_Vector;
-   237.
-   238. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " inited MO");
-   239. 				MO := Input_Matrix;
-   240.
-   241. 				--сигнал задачам о завершении ввода
-   242. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " finished input and send Signal to All");
-   243. 				ProtectedModule.inputFinishSignal;
-   244.
-   245. 			else
-   246. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " waits for inputting data in T1, Tp");
-   247. 			end if;
-   248. 			ProtectedModule.waitInput; 
-   249. 			scalarResults(i) := Scalar_Multiply(B, C, startIndex, endIndex);
-   250. 			ProtectedModule.finishScalarPreparation;
-   251. 			if i = 1 then
-   252. 				For j in 1..p loop
-   253. 					Put(Integer'Image(ScalarResults(J)));
-   254. 					New_Line;
-   255. 				end loop;
-   256. 				ProtectedModule.waitScalarPreparationFin;
-   257. 				ProtectedModule.init_a(scalarResultsSum);
-   258. 				ProtectedModule.outputLine("scalar multiplication result = " & Integer'Image(ProtectedModule.read_a));
-   259. 				ProtectedModule.finishScalarMultCalcs;
+   229. 			--обчислення скалярного добутку
+   230. 			ProtectedModule.addToScalarMultResult(Scalar_Multiply(B, C, startIndex, endIndex));
+   231.
+   232. 			--синхронізація по завершенню обчислення скалярного добутку
+   233. 			ProtectedModule.finishScalarMultCalcs;
+   234. 			ProtectedModule.waitScalarMultFin;
+   235.
+   236. 			--копіювання СР
+   237. 			ProtectedModule.outputLine("Task "& Integer'Image(i) & " is copying shared resources");
+   238. 			ei := ProtectedModule.readE;
+   239. 			di := ProtectedModule.readD;
+   240. 			Ri := ProtectedModule.readR;
+   241. 			xi := ProtectedModule.read_a;
+   242. 			MKi := ProtectedModule.readMK;
+   243.
+   244. 			ProtectedModule.outputLine("Task "& Integer'Image(i) & " is calculating matrix equation");
+   245. 			
+   246. 			calcMatrixEquation(xi, ei, di, startIndex, endIndex, Ri, MKi);
+   247.
+   248. 			if i = 2 then
+   249. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " is waiting for signal from all(finishing calc matrix equation)");
+   250. 				ProtectedModule.readyForOuptut;
+   251. 				if n <= 8 then
+   252. 					Put_Line("Result:");
+   253. 					New_line;
+   254. 					Output_Vector(A);
+   255. 				end if;
+   256. 				Get(H);
+   257. 			else
+   258. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " is sending signal to T2 (finishing calc matrix equation)");
+   259. 				ProtectedModule.finishCalcsSignal;
    260. 			end if;
-   261. 			ProtectedModule.waitScalarMultFin;
-   262. 			ProtectedModule.outputLine("Task "& Integer'Image(i) & " is copying shared resources");
-   263.
-   264. 			--копіювання СР
-   265. 			ei := ProtectedModule.readE;
-   266. 			di := ProtectedModule.readD;
-   267. 			Ri := ProtectedModule.readR;
-   268. 			scalarMultResult_i := ProtectedModule.read_a;
-   269. 			MKi := ProtectedModule.readMK;
-   270.
-   271. 			ProtectedModule.outputLine("Task "& Integer'Image(i) & " is calculating matrix equation");
-   272.
-   273. 			
-   274. 			calcMatrixEquation(scalarMultResult_i, ei, di, startIndex, endIndex, Ri, MKi);
-   275.
-   276. 			if i = 2 then
-   277. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " is waiting for signal from all(finishing calc matrix equation)");
-   278. 				ProtectedModule.readyForOuptut;
-   279. 				if n <= 8 then
-   280. 					Put_Line("Result:");
-   281. 					New_line;
-   282. 					Output_Vector(A);
-   283. 				end if;
-   284. 				Get(H);
-   285. 			else
-   286. 				ProtectedModule.outputLine("Task "& Integer'Image(i) & " is sending signal to T2 (finishing calc matrix equation)");
-   287. 				ProtectedModule.finishCalcsSignal;
-   288. 			end if;
-   289. 			Put_Line("Task " & Integer'Image(i) & " finished");
-   290. 			New_line;
-   291. 		end ThreadTask;
-   292.
-   293. 			type ThreadTaskPointer is access ThreadTask;
-   294. 			type TaskArray is array (1 .. p) of ThreadTaskPointer;
-   295. 			tArray: TaskArray;
-   296. 		begin	
-   297. 			for I in 1 .. p loop
-   298. 				scalarResults(I) := 0;
-   299. 				tArray(I) := new ThreadTask(I);
-   300. 			end loop;
-   301. 		end Start;
-   302.
-   303. begin
-   304. 	Put("Program started");
-   305. 	New_line;
-   306. 	Put("Input N");
-   307. 	New_line;
-   308. 	Get(n);
-   309. 	Put("Input P");
-   310. 	New_line;
-   311. 	Get(p);
-   312. 	h := n/p;
-   313. 	Start;
-   314. end Main;
+   261. 			Put_Line("Task " & Integer'Image(i) & " finished");
+   262. 			New_line;
+   263. 		end ThreadTask;
+   264.
+   265. 			type ThreadTaskPointer is access ThreadTask;
+   266. 			type TaskArray is array (1 .. p) of ThreadTaskPointer;
+   267. 			tArray: TaskArray;
+   268. 		begin	
+   269. 			for I in 1 .. p loop
+   270. 				tArray(I) := new ThreadTask(I);
+   271. 			end loop;
+   272. 		end Start;
+   273.
+   274. begin
+   275. 	Put("Program started");
+   276. 	New_line;
+   277. 	Put("Input N");
+   278. 	New_line;
+   279. 	Get(n);
+   280. 	Put("Input P");
+   281. 	New_line;
+   282. 	Get(p);
+   283. 	h := n/p;
+   284. 	Start;
+   285. end Main;
 
- 314 lines: No errors, 1 warning
+ 285 lines: No errors

@@ -1,5 +1,5 @@
 V "GNAT Lib v4.6"
-A -gnatl=matr.lst
+A -gnatl=matrixoperations.lst
 A -mtune=generic
 A -march=x86-64
 P SS ZX

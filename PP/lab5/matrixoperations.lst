@@ -1,0 +1,173 @@
+GNAT 4.6.4
+Copyright 1992-2010, Free Software Foundation, Inc.
+
+Compiling: matrixoperations.adb (source file time stamp: 2016-04-06 10:46:08)
+
+     1. with Ada.Text_IO, Ada.Integer_Text_IO;
+     2. use Ada.Text_IO, Ada.Integer_Text_IO;
+     3. ------------------------------------------------------------------
+     4. --  File: matrixOperations.adb                                  --
+     5. --                                                              --
+     6. --  Автор: Олег Кахерський, група ІП-31                         --
+     7. --  Дата: 12.03.2016                                            --
+     8. ------------------------------------------------------------------
+     9. package body MatrixOperations is 
+    10.
+    11. procedure Output_Vector (A : Vector) is
+    12. 	begin
+    13.     	New_Line;
+    14.     	for I in 1..N loop
+    15.     		Put(Item => A(i), Width => 5);
+    16.         end loop;
+    17. end Output_Vector;
+    18.
+    19. procedure Matrix_Matrix_Multiply
+    20.     (Left  : Matrix;
+    21.     Right  : Matrix;
+    22.     Start_Index: Integer;
+    23.     End_Index: Integer;
+    24.     Result_Matrix: out Matrix) is
+    25.     begin
+    26.         for i in Start_Index..End_Index loop
+    27.             for J in 1..N loop
+    28.                Result_Matrix(I)(J) := 0;
+    29.                for K in 1..N loop
+    30.             Result_Matrix(I)(J) := Result_Matrix(I)(J) + Left(I)(K) * Right(K)(J);
+    31.             end loop;
+    32.         end loop;
+    33.     end loop;
+    34. end Matrix_Matrix_Multiply;
+    35.
+    36. function Scalar_Multiply
+    37.     (V1: Vector; 
+    38.     V2:Vector;
+    39.     Start_Index:Integer;
+    40.     End_Index:Integer) return Integer is
+    41.     Result: Integer := 0;
+    42.     begin
+    43.         for I in Start_Index..End_Index loop
+    44.             Result := Result + V1(I)*V2(I);
+    45.         end loop;
+    46.     return Result;
+    47. end Scalar_Multiply;
+    48.
+    49. procedure Vector_Vector_Add
+    50.     (V1: Vector;
+    51.     V2: Vector; 
+    52.     Result_Vector: out Vector;
+    53.     Const1: Integer;
+    54.     Const2: Integer;
+    55.     Start_Index: Integer;
+    56.     End_Index: Integer) is
+    57.     begin
+    58.         for I in Start_Index..End_Index loop
+    59.             Result_Vector(I) := Const1*V1(I) + Const2*V2(I);
+    60.         end loop;
+    61. end Vector_Vector_Add;
+    62.
+    63. procedure Vector_Matrix_Multiply
+    64.     (V: Vector;
+    65.     MT:Matrix;
+    66.     Result: out Vector;
+    67.     Start_Index:Integer;
+    68.     End_Index:Integer) is
+    69.     begin
+    70.         for I in Start_Index..End_Index loop
+    71.             Result(I) := 0;
+    72.             for J in 1..N loop
+    73.                 Result(I) := Result(I) + V(J) * MT(I)(J);
+    74.             end loop; 
+    75.         end loop;
+    76. end Vector_Matrix_Multiply;
+    77.
+    78. function Input_Vector return Vector is
+    79. 	V: Vector;
+    80.    	begin
+    81.     	for I in 1..N loop
+    82.     		V(I) := 1;
+    83. 		end loop;
+    84. 	return V;
+    85. end Input_Vector;
+    86.
+    87. function Input_Constant return Integer is
+    88. 	begin
+    89.     return 1;
+    90. end Input_Constant;
+    91.
+    92. function Input_Matrix return Matrix is
+    93. 	Result_Matrix: Matrix;
+    94.     begin
+    95.         for I in 1..N loop
+    96.             for J in 1..N loop
+    97.                Result_Matrix(I)(J) := 1;
+    98.             end loop;
+    99.         end loop;
+   100. 	return Result_Matrix;
+   101. end Input_Matrix;
+   102.
+   103. end MatrixOperations;
+
+Compiling: matrixoperations.ads (source file time stamp: 2016-04-06 10:45:26)
+
+     1. ------------------------------------------------------------------
+     2. --  File: matrixOperations.ads                                  --
+     3. --                                                              --
+     4. --  Автор: Олег Кахерський, група ІП-31                         --
+     5. --  Дата: 12.03.2016                                            --
+     6. ------------------------------------------------------------------
+     7. generic
+     8. 	N: in Integer; --розмірність масивів та матриць
+     9. package MatrixOperations is
+    10. 	type Vector is private;
+    11. 	type Matrix is private;
+    12.
+    13.     --Вивід вектора на екран
+    14. 	procedure Output_Vector (A : Vector);     
+    15.
+    16.     --Множення матриці на матрицю(діапазон рядків StartIndex..EndIndex),
+    17.     --результат множення множиться на константу
+    18.     procedure Matrix_Matrix_Multiply
+    19.     (Left  : Matrix;
+    20.     Right  : Matrix;
+    21.     Start_Index: Integer;
+    22.     End_Index: Integer;
+    23.     Result_Matrix: out Matrix);
+    24.
+    25.     --скалярний добуток векторів в діапазоні [StartIndex, EndIndex)
+    26.     function Scalar_Multiply
+    27.     (V1: Vector; 
+    28.     V2:Vector;
+    29.     Start_Index:Integer;
+    30.     End_Index:Integer) return Integer;
+    31.
+    32.     procedure Vector_Matrix_Multiply
+    33.     (V: Vector;
+    34.     MT:Matrix;
+    35.     Result: out Vector;
+    36.     Start_Index:Integer;
+    37.     End_Index:Integer);
+    38.
+    39.     procedure Vector_Vector_Add
+    40.     (V1: Vector;
+    41.     V2: Vector; 
+    42.     Result_Vector: out Vector;
+    43.     Const1: Integer;
+    44.     Const2: Integer;
+    45.     Start_Index: Integer;
+    46.     End_Index: Integer);
+    47.
+    48.     --Ввід вектора
+    49.     function Input_Vector return Vector;
+    50.
+    51.     --Ввід константи
+    52.     function Input_Constant return Integer;
+    53.
+    54.     --Ввід матриці
+    55. 	function Input_Matrix return Matrix;
+    56.
+    57. 	private
+    58.       	type Vector is array (1..N) of Integer;
+    59.       	type Matrix is array (1..N) of Vector;
+    60. end MatrixOperations;
+
+ 103 lines: No errors
