@@ -29,7 +29,7 @@ procedure Main is
 		use MatrixOperationsN;
 	    MA,MO,MC,MK: Matrix;
 		Z: Vector;
-		task type ThreadTask(TaskNumber: Integer);
+		Task type ThreadTask(TaskNumber: Integer)
 		protected ProtectedModule is
 			entry waitInput; 					--бар'єр для синхронізації вводу даних
 			entry waitMinZCalcFinish; 			--бар'єр для синхронізації обчислень min(Z)

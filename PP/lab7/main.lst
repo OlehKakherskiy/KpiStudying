@@ -1,0 +1,241 @@
+GNAT 4.6.4
+Copyright 1992-2010, Free Software Foundation, Inc.
+
+Compiling: main.adb (source file time stamp: 2016-04-26 22:49:50)
+
+     1. with Ada.Text_IO, Ada.Integer_text_IO, Ada.Synchronous_Task_Control, MatrixOperations;
+     2. use Ada.Text_IO, Ada.Integer_text_IO, Ada.Synchronous_Task_Control;
+     3.
+     4. procedure lab7 is
+     5.
+     6. 	n: Integer; 			--розмірність матриць та векторів
+     7. 	p: Integer := 9; 		--кількість задач
+     8. 	h: Integer;
+     9.
+    10. 	procedure Start is		
+    11.
+    12. 		package MatrixOperationsN is new MatrixOperations(N);
+    13. 		use MatrixOperationsN;
+    14.
+    15. 		task type ThreadTask(TaskNumber, StartIndex, EndIndex, ResultStartIndex, ResultEndIndex: Integer) is
+    16. 			entry ShareDataFrom1Thread(d: in Integer; MO: in DynamicMatrix);
+    17. 			entry ShareDataFrom7Thread(Bh: in DynamicVector; C: in DynamicVector; MKh: in DynamicMatrix);
+    18. 			entry ShareFullData(Bh,C: DynamicVector; MKh,MO: DynamicMatrix; d: Integer);
+    19. 			entry CollectResult(Ah: in DynamicVector);
+    20. 		end ThreadTask;
+    21.
+    22. 		type ThreadTaskPointer is access ThreadTask;
+    23. 		type TaskArray is array (1 .. p) of ThreadTaskPointer;
+    24. 		tArray: TaskArray;
+    25.
+    26. 		procedure calcMatrixEquation(d: Integer; Bh:DynamicVector; C:DynamicVector; Res: out DynamicVector; MO:DynamicMatrix; MKh:DynamicMatrix) is
+    27. 			MatrixBuffer : DynamicMatrix(MKh'Range);
+    28. 			VectorBuffer : DynamicVector(Bh'Range);
+    29. 		begin
+    30. 			Matrix_Matrix_Multiply(MKh,MO,MatrixBuffer);
+    31. 			Vector_Matrix_Multiply(C,MatrixBuffer,VectorBuffer);
+    32. 			addVectors(Bh,VectorBuffer,Res,d);
+    33. 		end calcMatrixEquation;
+    34.
+    35. 		procedure copyDataFromT1(d: in Integer; di: out Integer; MO: in DynamicMatrix; MOi: out DynamicMatrix; sendTid, receiveTid:Integer) is
+    36. 		begin
+    37. 			Put_Line("Task " & Integer'Image(receiveTid) & " parse data of T1 from T"&Integer'Image(sendTid));
+    38. 			New_line;
+    39. 			di := d;
+    40. 			MOi := MO;
+    41. 		end copyDataFromT1;
+    42.
+    43. 		procedure sendDataFromT1(d: Integer; MO: DynamicMatrix; sendTid, receiveTid: Integer) is
+    44. 		begin
+    45. 			Put_Line("Task "&Integer'Image(sendTid)&" send data to T"&Integer'Image(receiveTid)&" of T1");
+    46. 			New_line;
+    47. 			tArray(receiveTid).ShareDataFrom1Thread(d,MO);
+    48. 		end sendDataFromT1;
+    49.
+    50. 		procedure sendDataFromT7(Bh, C : DynamicVector; MKh: DynamicMatrix; StartIndex, EndIndex, sendTid, receiveTid: Integer) is
+    51. 			--отослать 2 данные, принятые с 4 таска
+    52. 		begin
+    53. 			Put_Line("Task " & Integer'Image(sendTid) & " send data to T"&Integer'Image(receiveTid)&" of T7");
+    54. 			New_line;
+    55. 			tArray(receiveTid).ShareDataFrom7Thread(Bh(StartIndex..EndIndex),C,MKh(StartIndex..EndIndex));
+    56. 		end sendDataFromT7;
+    57.
+    58. 		procedure copyDataFromT7(Bh,C: in DynamicVector; MKh: in DynamicMatrix; Bi_h,Ci: out DynamicVector; MKi_h: out DynamicMatrix;
+    59. 		 receiveTid, sendTid, StartIndex, EndIndex: Integer) is
+    60. 		begin
+    61. 			Put_Line("Task " & Integer'Image(receiveTid) & " parse data of T7 from T"& Integer'Image(sendTid));
+    62. 			New_line;
+    63. 			Bi_h(StartIndex..EndIndex) := Bh(StartIndex..EndIndex);
+    64. 			Ci := C;
+    65. 			MKi_h := MKh(StartIndex..EndIndex);
+    66. 		end copyAndSendDataFromT7;
+        		|
+        >>> "end copyDataFromT7;" expected
+
+    67.
+    68. 		procedure receiveFullData(
+    69. 			Bh,C: in DynamicVector; Bi_h,Ci:out DynamicVector; 
+    70. 			MO, MKh : in DynamicMatrix; Moi, MKi_h: out DynamicMatrix;
+    71. 			d, StartIndex, EndIndex, receiveTid, sendTid: Integer; di: out Integer) is
+    72. 		begin
+    73. 			Put_Line("Task " & Integer'Image(receiveTid) & " received full data T"& Integer'Image(sendTid));
+    74. 			Bi_h(StartIndex..EndIndex) := Bh(StartIndex..EndIndex);
+    75. 			Ci := C;
+    76. 			di := d;
+    77. 			MOi := MO;
+    78. 			MKi_h(StartIndex..EndIndex) := MKh(StartIndex..EndIndex);
+    79. 		end receiveAndSendFullData;
+        		|
+        >>> "end receiveFullData;" expected
+
+    80.
+    81. 		procedure sendFullData(Bh,C:DynamicVector; MO, MKh: DynamicMatrix; d, StartIndex, EndIndex, receiveTid,sendTid : Integer) is
+    82. 			Put_Line("Task " & Integer'Image(sendTid) & " send full data to T"& Integer'Image(receiveTid));
+        			|
+        >>> missing "begin" for procedure "sendFullData" at line 81
+
+    83. 			if sendTid rem 3 > 0 then
+    84. 				tArray[receiveTid].ShareFullData(Bh(StartIndex .. EndIndex), C, MKh(StartIndex..EndIndex),MO,d);
+        				      |
+        >>> illegal character, replaced by "("
+
+    85. 			end if;
+    86. 		end sendFullData;
+    87. 		task body ThreadTask is
+    88. 			tid: Integer := TaskNumber;
+    89. 			Bi_h: DynamicVector(StartIndex .. EndIndex);
+    90. 			Ai_h: DynamicVector(ResultStartIndex .. ResultEndIndex);
+    91. 			Ci: DynamicVector(1..N);
+    92. 			MOi: DynamicMatrix(1..N);
+    93. 			MKi_h: DynamicMatrix(StartIndex..EndIndex);
+    94. 			di: Integer;
+    95. 		begin
+    96. 			Put_Line("Task " & Integer'Image(tid) & " started");
+    97. 			New_line;
+    98.
+    99. 			if tid = 1 then
+   100. 				--ввод
+   101. 				MOi := Input_Matrix;
+   102. 				di := Input_Constant;
+   103.
+   104. 				--отослать 4 введенные данные
+   105. 				sendDataFromT1(di,MOi,1,4);
+   106.
+   107. 				--принять с 4 таска отправленные данные 7 таска
+   108. 				accept ShareDataFrom7Thread(Bh: in DynamicVector; C: in DynamicVector; MKh: in DynamicMatrix) do
+   109. 					copyDataFromT7(Bh,C,MKh,Bi_h,Ci,MKi_h,1,4,StartIndex,EndIndex);
+   110. 				end ShareDataFrom7Thread;
+   111.
+   112.
+   113. 			elsif tid = 7 then
+   114. 				Bi_h := Input_Vector;
+   115. 				Ci := Input_Vector;
+   116. 				MKi_h := Input_Matrix;
+   117.
+   118. 				--отослать свои данные 8-9 таскам
+   119. 				sendDataFromT7(Bi_h,Ci,MKi_h,EndIndex+1,N,7,8);
+   120.
+   121. 				--принять данные с 4 таска с данными первого таска (для 7-9 тасков)
+   122. 				accept ShareDataFrom1Thread(d: in Integer; MO: in DynamicMatrix) do
+   123. 					copyDataFromT1(d,di,MO,MOi,tid,4);
+   124. 				end ShareDataFrom1Thread;
+   125.
+   126. 				--отослать свои данные 4 таску (данные для 1-6 тасков)
+   127. 				sendDataFromT7(Bi_h,Ci,MKi_h,1,StartIndex-1,7,4);
+   128. 				--отослать данные первого таска таскам 8-9
+   129. 				sendDataFromT1(di,MOi,7,8);
+   130.
+   131. 			elsif tid = 4 then
+   132. 				accept ShareDataFrom1Thread(d: in Integer; MO: in DynamicMatrix) do
+   133. 					copyDataFromT1(d,di,MO,MOi,tid,1);
+   134. 				end ShareDataFrom1Thread;
+   135.
+   136. 				sendDataFromT1(di,MOi,4,5);
+   137. 				sendDataFromT1(di,MOi,4,7);
+   138.
+   139. 				accept ShareDataFrom7Thread(Bh: in DynamicVector; C: in DynamicVector; MKh: in DynamicMatrix) do
+   140. 					copyAndSendDataFromT7(Bh,C,MKh,Bi_h,Ci,MKi_h,4,7,5,StartIndex,EndIndex);
+   141. 					sendDataFromT7(Bh,C,MKh,1,StartIndex-1,4,1);
+   142. 				end ShareDataFrom7Thread;
+   143.
+   144. 			else --task 2,3,5,6,8,9
+   145. 				accept ShareDataFrom1Thread(d: Integer; MO: in DynamicMatrix) do
+   146. 					copyDataFromT1(d,di,MO,Moi,tid-1,tid);
+   147. 				end ShareDataFrom1Thread;
+   148. 			
+   149. 			if tid rem 3 > 0 then --текущий номер 3,6,9 - не передаем дальше
+   150. 				sendDataFromT1(di,MOi,tid,tid+1);
+   151. 			end if;
+   152.
+   153. 			accept ShareDataFrom7Thread(Bh: in DynamicVector; C: in DynamicVector; MKh: in DynamicMatrix) do
+   154. 				copyAndSendDataFromT7(Bh,C,MKh,Bi_h,Ci,MKi_h,tid,tid-1,tid+1,StartIndex,EndIndex);
+   155. 			end ShareDataFrom7Thread;
+   156.
+   157. 			end if;
+   158. 			Put_Line("Task" & Integer'Image(tid) & " is starting calculation");
+   159. 			--данные есть во всех задачах.
+   160. 			calcMatrixEquation(di,Bi_h,Ci,Ai_h,MOi,MKi_h);
+   161. 			Put_Line("Task" & Integer'Image(tid) & " finished calculation");
+   162.
+   163. 			--пересылка и склеивание результата
+   164. 			if tid = 1 then
+   165. 				for i in 1..2 loop
+   166. 					accept CollectResult(Ah: in DynamicVector) do
+   167. 						Ai_h(Ah'Range) := Ah(Ah'Range);
+   168. 					end CollectResult;
+   169. 				end loop;
+   170. 				Output_Vector(Ai_h);
+   171. 			elsif tid = 7 then--4 и 7 таск не правильно
+   172. 				accept CollectResult(Ah: in DynamicVector) do
+   173. 					Ai_h(Ah'Range) := Ah(Ah'Range);
+   174. 					tArray(4).CollectResult(Ai_h);
+   175. 				end CollectResult;
+   176. 			elsif tid = 4 then
+   177. 				for i in 1..2 loop
+   178. 					accept CollectResult(Ah: in DynamicVector) do
+   179. 						Ai_h(Ah'Range) := Ah(Ah'Range);
+   180. 					end CollectResult;
+   181. 				end loop;
+   182. 				tArray(1).CollectResult(Ai_h);
+   183. 			elsif tid rem 3 = 0 then --task 3,6,9
+   184. 				tArray(tid-1).CollectResult(Ai_h);
+   185. 			else 
+   186. 				accept CollectResult(Ah: in DynamicVector) do
+   187. 					Ai_h(Ah'Range) := Ah(Ah'Range);
+   188. 				end CollectResult;
+   189. 				tArray(tid-1).CollectResult(Ai_h);
+   190. 			end if;
+   191. 			Put_Line("Task " & Integer'Image(tid) & " finished");
+   192. 		end ThreadTask;
+   193.
+   194. 	begin	
+   195. 		for I in 1 .. p loop
+   196. 			if i = p OR i = p-1 then
+   197. 				tArray(I) := new ThreadTask(I,(i-1)*H+1,N,(i-1)*H+1,N);
+   198. 			elsif i = 2 OR i = 5 then 
+   199. 				tArray(I) := new ThreadTask(I,(i-1)*H+1,(i+1)*H,(i-1)*H+1,(i+1)*H);
+   200. 			elseif i = 3 OR i = 6 then
+        			|
+        >>> incorrect spelling of keyword "elsif"
+
+   201. 				tArray(I) := new ThreadTask(I,(i-1)*H+1,N,(i-1)*H+1,N);
+   202. 				tArray(i) := new ThreadTask(i, (i-1)*H+1, i*H, (i-1)*H+1, N);
+   203. 			end if; 
+   204. 		end loop;
+   205. 		tArray[1] := new ThreadTask(1,1,)
+        		      |
+        >>> illegal character, replaced by "("
+
+   206.
+   207. 	end Start;
+   208. begin
+   209. 	Put("Program started");
+   210. 	New_line;
+   211. 	Put("Input N");
+   212. 	New_line;
+   213. 	Get(n);
+   214. 	h:= n/p;
+   215. 	Start;
+   216. end lab7;
+
+ 216 lines: 6 errors

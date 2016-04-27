@@ -1,0 +1,106 @@
+GNAT 4.6.4
+Copyright 1992-2010, Free Software Foundation, Inc.
+
+Compiling: MatrixOperations.adb (source file time stamp: 2016-04-27 00:18:52)
+
+     1. ------------------------------------------------------------------
+     2. --  File: MatrixOperations.adb                                  --
+     3. --  Author: Kakherskyi Oleh, group IP-31                        --
+     4. --  Date: 12.09.2015                                            --
+     5. ------------------------------------------------------------------
+     6. with Ada.Text_IO, Ada.Integer_Text_IO;
+     7. use Ada.Text_IO, Ada.Integer_Text_IO;
+     8.
+     9. package body MatrixOperations is
+                     |
+        >>> warning: file name does not match unit name, should be "matrixoperations.adb"
+        >>> file "matrixoperations.ads" not found
+
+    10.
+    11.    function Input_Vector return DynamicVector is
+    12.       V: DynamicVector(1..N);
+    13.          begin
+    14.          for I in V'Range loop
+    15.             V(I) := 1;
+    16.          end loop;
+    17.       return V;
+    18.    end Input_Vector;
+    19.
+    20.    function Input_Constant return Integer is
+    21.       begin
+    22.        return 1;
+    23.    end Input_Constant;
+    24.
+    25.    function Input_Matrix return DynamicMatrix is
+    26.       Result_Matrix: DynamicMatrix(1 .. N);
+    27.        begin
+    28.            for I in Result_Matrix'Range loop
+    29.                for J in 1..N loop
+    30.                   Result_Matrix(I)(J) := 1;
+    31.                end loop;
+    32.            end loop;
+    33.       return Result_Matrix;
+    34.    end Input_Matrix;
+    35.
+    36.    -------------------
+    37.    -- Output_Vector --
+    38.    -------------------
+    39.
+    40.    procedure Output_Vector (V : in DynamicVector) is
+    41.       begin
+    42.          New_Line;
+    43.          for I in V'Range loop
+    44.             Put(Item => V(I), Width => 5);
+    45.          end loop;
+    46.          New_Line;
+    47.       end Output_Vector;
+    48.
+    49.
+    50.    procedure Matrix_Matrix_Multiply
+    51.       (Left  : in DynamicMatrix;
+    52.       Right : in DynamicMatrix;
+    53.       Result_Matrix: out DynamicMatrix) is
+    54.       begin
+    55.          for i in Left'Range loop
+    56.             for J in 1..N loop
+    57.                Result_Matrix(I)(J) := 0;
+    58.                for K in Right'Range loop
+    59.                Result_Matrix(I)(J) := Result_Matrix(I)(J) + Left(I)(K) * Right(K)(J);
+    60.             end loop;
+    61.          end loop;
+    62.       end loop;
+    63.    end Matrix_Matrix_Multiply;
+    64.
+    65.
+    66.    procedure Vector_Matrix_Multiply
+    67.      (Left  : in DynamicVector;
+    68.       Right : in DynamicMatrix;
+    69.       Result_Vector: out DynamicVector) is
+    70.       begin
+    71.          for J in Result_Vector'Range loop
+    72.             Result_Vector(j) := 0;
+    73.             begin
+    74.                for K in 1..N loop
+    75.                   Result_Vector(J) := Result_Vector(J) + Left(K) * Right(J)(K);
+    76.                end loop;
+    77.             end;
+    78.          end loop;
+    79.       end Vector_Matrix_Multiply;
+    80.
+    81.       procedure addVectors(Left: DynamicVector; Right: DynamicVector; Result_Vector: out DynamicVector; d : Integer) is
+    82.       begin
+    83.          for J in Right'Range loop
+    84.             Result_Vector(J) := d * Left(J) + Right(J);
+    85.          end loop;
+    86.       end addVectors;
+    87.
+    88.       procedure Vector_Vector_Add(Left: DynamicVector; Right: DynamicVector; Result_Vector: out DynamicVector; d,startIndex,EndIndex : Integer) is
+    89.       begin
+    90.          for J in startIndex..EndIndex loop
+    91.             Result_Vector(J) := d * Left(J) + Right(J);
+    92.          end loop;
+    93.       end Vector_Vector_Add;
+    94.
+    95. end MatrixOperations;
+
+ 95 lines: 0 error, 0 warning
