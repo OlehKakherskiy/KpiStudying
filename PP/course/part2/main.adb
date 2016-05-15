@@ -29,7 +29,7 @@ procedure Main is
 		use MatrixOperationsN;
 	    MA,MO,MC,MK: Matrix;
 		Z: Vector;
-		Task type ThreadTask(TaskNumber: Integer)
+		Task type ThreadTask(TaskNumber: Integer);
 		protected ProtectedModule is
 			entry waitInput; 					--бар'єр для синхронізації вводу даних
 			entry waitMinZCalcFinish; 			--бар'єр для синхронізації обчислень min(Z)
@@ -138,69 +138,67 @@ procedure Main is
 		end calcMatrixEquation;
 
 		task body ThreadTask is
-			i: Integer := TaskNumber;
+			tid: Integer := TaskNumber;
 			ai, zi, startIndex, endIndex: Integer;
 			MBi : Matrix;
 		begin
-			Put_Line("Task " & Integer'Image(i) & " started");
+			Put_Line("Task " & Integer'Image(tid) & " started");
 			New_line;
-			startIndex := h*(i - 1) + 1;
-			endIndex := h*i;
-			if i = p AND n rem p = 1 then
-				endIndex := endIndex +1;
-			end if;
-			if i = 1 then
-				Put_Line("Task "& Integer'Image(i) & " is initing data");
+			startIndex := h*(tid - 1) + 1;
+			endIndex := h*tid;
+			if tid = 1 then
+				Put_Line("Task "& Integer'Image(tid) & " is initing data");
 				New_line;
-				Put_Line("Task "& Integer'Image(i) & " inited MB");
+				Put_Line("Task "& Integer'Image(tid) & " inited MB");
 				New_line;
 				ProtectedModule.initMB(Input_Matrix);
-				Put_Line("Task "& Integer'Image(i) & " inited MO");
+				Put_Line("Task "& Integer'Image(tid) & " inited MO");
 				New_line;
 				MO := Input_Matrix;
-				Put_Line("Task "& Integer'Image(i) & " inited A");
+				Put_Line("Task "& Integer'Image(tid) & " inited A");
 				New_line;
 				ProtectedModule.initAlpha(Input_Constant);
 				--сигнал задачам о завершении ввода
-				Put_Line("Task "& Integer'Image(i) & " finished input and send Signal to All");
+				Put_Line("Task "& Integer'Image(tid) & " finished input and send Signal to All");
 				New_line;
 				ProtectedModule.inputFinishSignal;
 			end if;
-			if i = p then
-				Put_Line("Task "& Integer'Image(i) & " is initing data");
+			if tid = p then
+				endIndex := n; --TODO:!!!!
+				Put_Line("Task "& Integer'Image(tid) & " is initing data");
 				New_line;
-				Put_Line("Task "& Integer'Image(i) & " inited MC");
+				Put_Line("Task "& Integer'Image(tid) & " inited MC");
 				New_line;
 				MC := Input_Matrix;
-				Put_Line("Task "& Integer'Image(i) & " inited MK");
+				Put_Line("Task "& Integer'Image(tid) & " inited MK");
 				New_line;
 				MK := Input_Matrix;
-				Put_Line("Task "& Integer'Image(i) & " inited Z");
+				Put_Line("Task "& Integer'Image(tid) & " inited Z");
 				New_line;
 				Z := Input_Vector;
 				ProtectedModule.setMinZ(100000000);
-				Put_Line("Task "& Integer'Image(i) & " finished input and send Signal to All");
+				Put_Line("Task "& Integer'Image(tid) & " finished input and send Signal to All");
 				New_line;
 				ProtectedModule.inputFinishSignal;
 			else
-				Put_Line("Task "& Integer'Image(i) & " waits for inputting data in T1, Tp");
+				Put_Line("Task "& Integer'Image(tid) & " waits for inputting data in T1, Tp");
 				New_line;
 			end if;
 			ProtectedModule.waitInput;
 			zi := Min(Z,startIndex, endIndex); 
-			Put_Line("Task "& Integer'Image(i) & " finished calcs minZ and sent signal of finishing");
+			Put_Line("Task "& Integer'Image(tid) & " finished calcs minZ and sent signal of finishing");
 			compareWithMinZ(zi);
-			Put_Line("Task "& Integer'Image(i) & " is copying shared resources");
+			Put_Line("Task "& Integer'Image(tid) & " is copying shared resources");
 			New_line;
 			--копіювання СР
 			ai := ProtectedModule.readAlpha;
 			zi := ProtectedModule.readMinZ;
 			MBi := ProtectedModule.readMB;
-			Put_Line("Task "& Integer'Image(i) & " is calculating matrix equation");
+			Put_Line("Task "& Integer'Image(tid) & " is calculating matrix equation");
 			New_line;
 			calcMatrixEquation(ai,zi,startIndex,endIndex,MBi);
-			if i = 1 then
-				Put_Line("Task "& Integer'Image(i) & " is waiting for signal from all(finishing calc matrix equation)");
+			if tid = 1 then
+				Put_Line("Task "& Integer'Image(tid) & " is waiting for signal from all(finishing calc matrix equation)");
 				New_line;
 				ProtectedModule.readyForOuptut;
 				DiffTime := Clock - StartTime;
@@ -214,11 +212,11 @@ procedure Main is
 				end if;
 				Get(H);
 			else
-				Put_Line("Task "& Integer'Image(i) & " is sending signal to T1 (finishing calc matrix equation)");
+				Put_Line("Task "& Integer'Image(tid) & " is sending signal to T1 (finishing calc matrix equation)");
 				New_line;
 				ProtectedModule.finishCalcsSignal;
 			end if;
-			Put_Line("Task " & Integer'Image(i) & " finished");
+			Put_Line("Task " & Integer'Image(tid) & " finished");
 			New_line;
 		end ThreadTask;
 			type ThreadTaskPointer is access ThreadTask;
