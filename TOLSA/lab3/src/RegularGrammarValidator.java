@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  */
 public class RegularGrammarValidator {
 
-    private static final Pattern terminalsValidationRule = Pattern.compile("^\\{([a-z0-9!@#$%^&*~], *)*[a-z0-9!@#$%^&*~]?\\}$");
+    private static final Pattern terminalsValidationRule = Pattern.compile("^\\{([a-z0-9!@#$%^&*~ε], *)*[a-z0-9!@#$%^&*~ε]?\\}$");
 
     private static final Pattern nonTerminalsValidationRule = Pattern.compile("^\\{([A-Z], *)*[A-Z]?\\}$");
 
@@ -85,7 +85,7 @@ public class RegularGrammarValidator {
         StringBuilder regexpClassBuilder = new StringBuilder("[");
         for (Character key : grammarSymbols.keySet())
             regexpClassBuilder.append(key);
-        return regexpClassBuilder.append(']').toString();
+        return regexpClassBuilder.append("ε]").toString();
     }
 
     private void validateGrammarStringArray(String[] regularGrammarString) {

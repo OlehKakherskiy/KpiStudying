@@ -1,5 +1,6 @@
 package grammar;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,13 +38,27 @@ public class RegularGrammarBuilder {
 
     private boolean addTransitionRule(String ruleRepresentation) { //ruleRepresentation формат: NonTermSymbol=>Rule
 
-        //1 часть - нетерминальный символ, 2 - правило вида <termSymbol><NonTermSymbol>|<termSymbol>.
+        //1 часть - нетерминальный символ, 2 - правило вида <termSymbol><NonTermSymbol>|<termSymbol> (или <NonTermSymbol><termSymbol>|<termSymbol>)
         String[] ruleParts = ruleRepresentation.split(transitionRuleSplitter);
 
         char nonTermSymbol = ruleParts[0].trim().charAt(0);
+        System.out.println("ruleParts = " + Arrays.toString(ruleParts));
+
         for (int i = 1; i < ruleParts.length; i++) {
-            if (!grammar.addTransitionRule(nonTermSymbol, ruleParts[i].trim()))
+            String[] simpleRules = ruleParts[i].split("\\|"); //разбитие правила на простые правила вида <NonTermSymbol><termSymbol> или <termSymbol>
+            System.out.println("simpleRules = " + Arrays.toString(simpleRules));
+            if (!addSimpleRulesToGrammar(nonTermSymbol, simpleRules))
                 return false;
+        }
+        return true;
+    }
+
+    //добавляем все простые правила в грамматику
+    private boolean addSimpleRulesToGrammar(char nonTerminal, String[] simpleRules) {
+        for (String simpleRule : simpleRules) {
+            if (!grammar.addTransitionRule(nonTerminal, simpleRule.trim())) {
+                return false;
+            }
         }
         return true;
     }

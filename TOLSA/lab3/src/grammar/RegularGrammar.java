@@ -18,6 +18,8 @@ public class RegularGrammar {
 
     private char startSymbol;
 
+    public boolean rightOrientedGrammar = true; //TODO: пока что всегда праволинейная, но нужно и леволинейную сделать
+
     public Character getTerminalSymbol(Character key) {
         return terminals.get(key);
     }
