@@ -1,6 +1,5 @@
 package grammar;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,11 +41,11 @@ public class RegularGrammarBuilder {
         String[] ruleParts = ruleRepresentation.split(transitionRuleSplitter);
 
         char nonTermSymbol = ruleParts[0].trim().charAt(0);
-        System.out.println("ruleParts = " + Arrays.toString(ruleParts));
+//        System.out.println("ruleParts = " + Arrays.toString(ruleParts));
 
         for (int i = 1; i < ruleParts.length; i++) {
             String[] simpleRules = ruleParts[i].split("\\|"); //разбитие правила на простые правила вида <NonTermSymbol><termSymbol> или <termSymbol>
-            System.out.println("simpleRules = " + Arrays.toString(simpleRules));
+//            System.out.println("simpleRules = " + Arrays.toString(simpleRules));
             if (!addSimpleRulesToGrammar(nonTermSymbol, simpleRules))
                 return false;
         }

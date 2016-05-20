@@ -19,7 +19,7 @@ public class NkaModel {
 
     private Map<Character, TransitionFunction> transitions;
 
-    private class TransitionFunction {
+    public class TransitionFunction {
 
         private char state; //для которого определена данная функция (нетерминальный символ)
 
@@ -35,10 +35,6 @@ public class NkaModel {
             // будут одинаковые объекты, а нужны разные при одном и том же символе
         }
 
-        char getFunctionOf(char terminalSymbol) {
-            return transitionFunction.get(terminalSymbol);
-        }
-
         public char getState() {
             return state;
         }
@@ -49,7 +45,11 @@ public class NkaModel {
         endStates = new HashMap<>();
         allStates = new HashMap<>();
         terminals = new HashMap<>();
-        transitions = new IdentityHashMap<>();
+        transitions = new HashMap<>();
+    }
+
+    public Map<Character, Character> getFullFunctionOf(char state) {
+        return transitions.get(state) == null ? new HashMap<>() : transitions.get(state).transitionFunction;
     }
 
     public void addFunctionPair(char nonTerminalArgument, char terminalArgument, char nonTerminalValue) {

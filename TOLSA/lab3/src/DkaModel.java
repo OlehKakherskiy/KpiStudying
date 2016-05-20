@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -7,9 +8,24 @@ import java.util.Set;
  */
 public class DkaModel {
 
-    Map<String, Character> states = new HashMap<>();
+    Set<Set<Character>> states = new HashSet<>();
 
     Map<Character, Character> alphabet = new HashMap<>();
 
-    Map<String, Set<String>> transitions = new HashMap<>();
+    Map<Set<Character>, Map<Character, Set<Character>>> transitions = new HashMap<>();
+
+    Set<Set<Character>> endStates = new HashSet<>();
+
+    Set<Character> startStates = new HashSet<>();
+
+    @Override
+    public String toString() {
+        return "DkaModel{" +
+                "states=" + states +
+                ",\n alphabet=" + alphabet +
+                ",\n transitions=" + transitions +
+                ",\n endStates=" + endStates +
+                ",\n startStates=" + startStates +
+                '}';
+    }
 }

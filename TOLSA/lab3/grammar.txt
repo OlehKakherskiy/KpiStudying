@@ -1,0 +1,4 @@
+{S,A,B,C,D}
+{a,b,c,d,~}
+{S=>aA|bB; A=>cC|~; C=>cC|cA; B=>dD|~; D=>dD|dB;}
+S
