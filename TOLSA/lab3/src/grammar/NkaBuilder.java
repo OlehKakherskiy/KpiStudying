@@ -1,6 +1,5 @@
 package grammar;
 
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -14,15 +13,15 @@ public class NkaBuilder {
         NkaModel stateMachine = new NkaModel();
 
         stateMachine.setAllStates(grammar.getNonTerminals()); //нетерминальные символы - множество вершин НКА
-        stateMachine.getEndStates().put(finalMachineState, finalMachineState); //конечное состояние НКА
-        stateMachine.getAllStates().put(finalMachineState, finalMachineState); //конечное состояние - символ множества состояний
+        stateMachine.getEndStates().add(finalMachineState); //конечное состояние НКА
+        stateMachine.getAllStates().add(finalMachineState); //конечное состояние - символ множества состояний
 
 
-        stateMachine.getStartStates().put(grammar.getStartSymbol(), grammar.getStartSymbol()); //начальное состояние НКА - стартовый символ грамматики
+        stateMachine.getStartStates().add(grammar.getStartSymbol()); //начальное состояние НКА - стартовый символ грамматики
         stateMachine.setTerminals(grammar.getTerminals()); //терминальные символы - аргументы функции переходов.
 
-        Map<Character, Character> nonTerminalSymbols = grammar.getNonTerminals();
-        for (char nonTerminal : nonTerminalSymbols.keySet()) {
+        Set<Character> nonTerminalSymbols = grammar.getNonTerminals();
+        for (char nonTerminal : nonTerminalSymbols) {
             addFunctionPairForOneState(stateMachine, nonTerminal, grammar.getTransitionRules(nonTerminal), grammar);
         }
         return stateMachine;
@@ -34,7 +33,7 @@ public class NkaBuilder {
             if (rule.length() == 1) { //терминальный символ или эпсилон. Если эпсилон - добавляем вершину в конечные.
                 char terminal = rule.charAt(0);
                 if (terminal == 'ε') {
-                    stateMachine.getEndStates().put(nonTerminal, nonTerminal); //добавили вершину в множество конечных вершин
+                    stateMachine.getEndStates().add(nonTerminal); //добавили вершину в множество конечных вершин
                 } else { //просто терминальный символ - добавляем функцию вида F(nonTerminal, terminal) = finalMachineState
                     stateMachine.addFunctionPair(nonTerminal, terminal, finalMachineState);
                 }

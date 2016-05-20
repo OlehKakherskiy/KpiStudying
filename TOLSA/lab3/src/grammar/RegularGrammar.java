@@ -10,23 +10,13 @@ import java.util.Set;
  */
 public class RegularGrammar {
 
-    private Map<Character, Character> terminals = new HashMap<>();
+    private Set<Character> terminals = new HashSet<>();
 
-    private Map<Character, Character> nonTerminals = new HashMap<>();
+    private Set<Character> nonTerminals = new HashSet<>();
 
     private Map<Character, Set<String>> transitionRules = new HashMap<>();
 
     private char startSymbol;
-
-    public boolean rightOrientedGrammar = true; //TODO: пока что всегда праволинейная, но нужно и леволинейную сделать
-
-    public Character getTerminalSymbol(Character key) {
-        return terminals.get(key);
-    }
-
-    public Character getNonTerminalSymbol(Character key) {
-        return nonTerminals.get(key);
-    }
 
     public Set<String> getTransitionRules(Character key) {
         return transitionRules.get(key);
@@ -45,21 +35,6 @@ public class RegularGrammar {
         }
     }
 
-    public Map<Character, Character> getTerminals() {
-        return terminals;
-    }
-
-    void setTerminals(Map<Character, Character> terminals) {
-        this.terminals = terminals;
-    }
-
-    public Map<Character, Character> getNonTerminals() {
-        return nonTerminals;
-    }
-
-    void setNonTerminals(Map<Character, Character> nonTerminals) {
-        this.nonTerminals = nonTerminals;
-    }
 
     public Map<Character, Set<String>> getTransitionRules() {
         return transitionRules;
@@ -70,10 +45,26 @@ public class RegularGrammar {
     }
 
     boolean setStartSymbol(char startSymbol) {
-        if (nonTerminals.containsKey(startSymbol)) {
+        if (nonTerminals.contains(startSymbol)) {
             this.startSymbol = startSymbol;
             return true;
         } else return false;
+    }
+
+    public Set<Character> getTerminals() {
+        return terminals;
+    }
+
+    public void setTerminals(Set<Character> terminals) {
+        this.terminals = terminals;
+    }
+
+    public Set<Character> getNonTerminals() {
+        return nonTerminals;
+    }
+
+    public void setNonTerminals(Set<Character> nonTerminals) {
+        this.nonTerminals = nonTerminals;
     }
 
     @Override

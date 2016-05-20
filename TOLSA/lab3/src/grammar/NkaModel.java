@@ -1,21 +1,19 @@
 package grammar;
 
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Oleh Kakherskyi (olehkakherskiy@gmail.com)
  */
 public class NkaModel {
 
-    private Map<Character, Character> startStates;
+    private Set<Character> startStates;
 
-    private Map<Character, Character> endStates;
+    private Set<Character> endStates;
 
-    private Map<Character, Character> allStates;
+    private Set<Character> allStates;
 
-    private Map<Character, Character> terminals;
+    private Set<Character> terminals;
 
     private Map<Character, TransitionFunction> transitions;
 
@@ -41,10 +39,10 @@ public class NkaModel {
     }
 
     public NkaModel() {
-        startStates = new HashMap<>();
-        endStates = new HashMap<>();
-        allStates = new HashMap<>();
-        terminals = new HashMap<>();
+        startStates = new HashSet<>();
+        endStates = new HashSet<>();
+        allStates = new HashSet<>();
+        terminals = new HashSet<>();
         transitions = new HashMap<>();
     }
 
@@ -59,37 +57,9 @@ public class NkaModel {
         transitions.get(nonTerminalArgument).addFunction(terminalArgument, nonTerminalValue);
     }
 
-    public Map<Character, Character> getStartStates() {
-        return startStates;
-    }
-
-    public void setStartStates(Map<Character, Character> startStates) {
-        this.startStates = startStates;
-    }
-
-    public Map<Character, Character> getEndStates() {
-        return endStates;
-    }
-
-    public void setEndStates(Map<Character, Character> endStates) {
-        this.endStates = endStates;
-    }
-
-    public Map<Character, Character> getAllStates() {
-        return allStates;
-    }
-
-    public void setAllStates(Map<Character, Character> allStates) {
-        for (Map.Entry<Character, Character> state : allStates.entrySet())
-            this.allStates.put(state.getKey(), state.getValue());
-    }
-
-    public Map<Character, Character> getTerminals() {
-        return terminals;
-    }
-
-    public void setTerminals(Map<Character, Character> terminals) {
-        this.terminals = terminals;
+    public void setAllStates(Set<Character> allStates) {
+        for (Character state : allStates)
+            this.allStates.add(state);
     }
 
     public Map<Character, TransitionFunction> getTransitions() {
@@ -104,11 +74,11 @@ public class NkaModel {
     public String toString() {
         String resultTemplate = "Множество вершин: %s; \nВходной алфавит: %s; " +
                 "\nМножество команд:\n%s; \nМножество начальных состояний: %s; \nМножество конечных состояний: %s";
-        String states = allStates.keySet().toString();
-        String inputAlphabet = terminals.keySet().toString();
+        String states = allStates.toString();
+        String inputAlphabet = terminals.toString();
         String transitionFunction = buildTransitionFunction();
-        String startStates = this.startStates.keySet().toString();
-        String endStates = this.endStates.keySet().toString();
+        String startStates = this.startStates.toString();
+        String endStates = this.endStates.toString();
         return String.format(resultTemplate, states, inputAlphabet, transitionFunction, startStates, endStates);
     }
 
@@ -126,4 +96,32 @@ public class NkaModel {
         return result.deleteCharAt(result.length() - 1).toString();
     }
 
+
+    public Set<Character> getStartStates() {
+        return startStates;
+    }
+
+    public void setStartStates(Set<Character> startStates) {
+        this.startStates = startStates;
+    }
+
+    public Set<Character> getEndStates() {
+        return endStates;
+    }
+
+    public void setEndStates(Set<Character> endStates) {
+        this.endStates = endStates;
+    }
+
+    public Set<Character> getAllStates() {
+        return allStates;
+    }
+
+    public Set<Character> getTerminals() {
+        return terminals;
+    }
+
+    public void setTerminals(Set<Character> terminals) {
+        this.terminals = terminals;
+    }
 }

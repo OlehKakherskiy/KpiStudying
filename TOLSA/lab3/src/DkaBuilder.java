@@ -12,7 +12,7 @@ public class DkaBuilder {
     public DkaModel buildDkaFromNka(NkaModel nka) {
         this.nka = nka;
         Stack<Set<Character>> preparedStates = new Stack<>();
-        preparedStates.push(nka.getStartStates().keySet()); //добавляем множество стартовых вершин для просмотра
+        preparedStates.push(nka.getStartStates()); //добавляем множество стартовых вершин для просмотра
 
         Set<Set<Character>> passedStates = new HashSet<>();
 
@@ -40,7 +40,7 @@ public class DkaBuilder {
         DkaModel model = new DkaModel();
         model.alphabet = nka.getTerminals();
         model.transitions = transitionFunction;
-        model.startStates = nka.getStartStates().keySet();
+        model.startStates = nka.getStartStates();
         model.states = passedStates;
         processEndStates(model, nka);
         return model;
@@ -48,7 +48,7 @@ public class DkaBuilder {
 
     private void processEndStates(DkaModel dka, NkaModel nka) {
         for (Set currentState : dka.states) {
-            if (checkIfHaveNkaEndStates(currentState, nka.getEndStates().keySet()))
+            if (checkIfHaveNkaEndStates(currentState, nka.getEndStates()))
                 dka.endStates.add(currentState);
         }
     }

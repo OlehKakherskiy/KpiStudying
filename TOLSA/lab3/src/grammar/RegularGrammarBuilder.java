@@ -1,7 +1,7 @@
 package grammar;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Oleh Kakherskyi (olehkakherskiy@gmail.com)
@@ -70,17 +70,17 @@ public class RegularGrammarBuilder {
         return grammar;
     }
 
-    private Map<Character, Character> buildGrammarSymbolsSet(String grammarSymbolSet) throws IllegalArgumentException { //параметр в формате {Symbol1,Symbol2,Symbol3}
+    private Set<Character> buildGrammarSymbolsSet(String grammarSymbolSet) throws IllegalArgumentException { //параметр в формате {Symbol1,Symbol2,Symbol3}
         String terminals = grammarSymbolSet.substring(1, grammarSymbolSet.length() - 1); //убираем {} => termSymbol1,termSymbol1,termSymbol1
         String[] splittedTerminals = terminals.split(",");
-        Map<Character, Character> preparedTerminals = new HashMap<>();
+        Set<Character> preparedTerminals = new HashSet<>();
 
         for (String terminalSymbol : splittedTerminals) {
             char preparedTerminal = terminalSymbol.trim().charAt(0);
-            if (preparedTerminals.containsKey(preparedTerminal)) {
+            if (preparedTerminals.contains(preparedTerminal)) {
                 throw new IllegalArgumentException("Дублирование символа грамматики: " + preparedTerminal);
             }
-            preparedTerminals.put(preparedTerminal, preparedTerminal);
+            preparedTerminals.add(preparedTerminal);
         }
         return preparedTerminals;
     }

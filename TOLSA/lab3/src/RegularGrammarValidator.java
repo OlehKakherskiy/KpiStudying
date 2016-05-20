@@ -1,7 +1,7 @@
 import grammar.RegularGrammar;
 import grammar.RegularGrammarBuilder;
 
-import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -81,9 +81,9 @@ public class RegularGrammarValidator {
         builder.addStartSymbol(startSymbol);
     }
 
-    private String buildTerminalOrNonTerminalRegexpClass(Map<Character, Character> grammarSymbols) {
+    private String buildTerminalOrNonTerminalRegexpClass(Set<Character> grammarSymbols) {
         StringBuilder regexpClassBuilder = new StringBuilder("[");
-        for (Character key : grammarSymbols.keySet())
+        for (Character key : grammarSymbols)
             regexpClassBuilder.append(key);
         return regexpClassBuilder.append("ε]").toString();
     }

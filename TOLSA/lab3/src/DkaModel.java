@@ -10,7 +10,7 @@ public class DkaModel {
 
     Set<Set<Character>> states = new HashSet<>();
 
-    Map<Character, Character> alphabet = new HashMap<>();
+    Set<Character> alphabet = new HashSet<>();
 
     Map<Set<Character>, Map<Character, Set<Character>>> transitions = new HashMap<>();
 
