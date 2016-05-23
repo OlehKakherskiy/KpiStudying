@@ -1,0 +1,11 @@
+var t,c:integer;
+type recordType: record;
+begin
+	var b:float;
+end;
+begin
+	if(1 == 1)then 
+	begin
+       t := 10 + c * c / (15 + c);
+	end;
+end;
